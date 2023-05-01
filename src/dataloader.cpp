@@ -1,4 +1,4 @@
-#include "dataloader.h"
+#include "../include/dataloader.h"
 
 const Digraph DataLoader::read_dot(const string&filename, int copy) const{
     
@@ -14,7 +14,7 @@ const Digraph DataLoader::read_dot(const string&filename, int copy) const{
 
         ifstream file(filename);
         if(!file.is_open()){
-            cerr << "Error opening file " << filename << "\n";
+            cerr << "Error opening file " << filename << ".\n";
             exit(1);
         }
 
@@ -79,5 +79,43 @@ const Digraph DataLoader::read_dot(const string&filename, int copy) const{
 
 const Architecture DataLoader::read_json(const string&filename) const{
 
+    // Load the JSON file
+    ifstream jsonFile(filename);
+
+    if(!jsonFile.is_open()){
+        cerr << "Could not open " + filename + ".\n";
+        exit(1);
+    }
+
+    Json::Value root;
+    jsonFile >> root;
+
+    // Get the size of the input and output vectors
+    int num_pes = root["num_pes"].asInt();
+
+    // Read the input and output vectors for each PE
+    vector<vector<int>> input(num_pes);
+    vector<vector<int>> output(num_pes);
     
+    for (int i = 0; i < num_pes; i++) {
+        string peName  = "PE"+to_string(i);
+        Json::Value pe = root[peName];
+
+        int insize  = pe["input"].size();
+        int outsize = pe["output"].size();
+        
+        for(int j=0; j<insize; j++){
+            input[i].push_back( pe["input"][j].asInt() );
+        }
+
+        for(int j=0; j<outsize; j++){
+            output[i].push_back( pe["output"][j].asInt() );
+        }
+
+    }
+
+    Architecture arc(input,output,num_pes);
+    jsonFile.close();
+    
+    return arc;
 }

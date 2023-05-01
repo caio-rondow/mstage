@@ -6,6 +6,7 @@
 #include <regex>
 #include <fstream>
 #include <iostream>
+#include <jsoncpp/json/json.h>
 
 #include "digraph.h"
 #include "architecture.h"

@@ -1,4 +1,4 @@
-#include "digraph.h"
+#include "../include/digraph.h"
 #include <iostream>
 using namespace std;
 Digraph::Digraph(){ create(); }
