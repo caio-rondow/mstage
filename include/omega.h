@@ -12,9 +12,9 @@ class Omega{
 
 private:
 
-    int **_route_matrix;                     // shows route in switch
-    int **_row_status;                       // shows if a wire is in use
-    int _netsize, _st, _ex, _exsize, _mask;  // parametros da rede
+    int **_switch;                          // shows route in switch
+    int **_route_matrix;                    // shows if a wire is in use
+    int _netsize, _st, _ex, _exsize, _mask; // parametros da rede
     vector<vector<int>> _in_neighbor;
     vector<int> _out_predecessor;
 

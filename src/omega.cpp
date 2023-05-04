@@ -9,11 +9,11 @@ Omega::Omega(int netsize, int st, int ex, int radix){
     _exsize  = pow(radix,ex);
     _mask    = netsize-1;
 
-    _route_matrix = new int*[netsize];
-    _row_status   = new int*[netsize];
+    _switch = new int*[netsize];
+    _route_matrix   = new int*[netsize];
     for(int i=0; i<_netsize; i++){
-        _route_matrix[i] = new int[_st+_ex];
-        _row_status[i]   = new int[_st+ex];
+        _switch[i] = new int[_st+_ex];
+        _route_matrix[i]   = new int[_st+ex];
     }
 
     _out_predecessor = vector<int>(_netsize,-1);
@@ -26,8 +26,8 @@ Omega::~Omega(){ destroy(); }
 
 /* Aux. Functions */
 void Omega::create(){
-    _route_matrix = nullptr;
-    _row_status   = nullptr;
+    _switch = nullptr;
+    _route_matrix   = nullptr;
     _netsize      = 0;
     _st           = 0;
     _ex           = 0;
@@ -38,11 +38,11 @@ void Omega::create(){
 void Omega::destroy(){
 
     for(int i=0; i<_netsize; i++){
+        delete[] _switch[i];
         delete[] _route_matrix[i];
-        delete[] _row_status[i];
     }
+    delete[] _switch;
     delete[] _route_matrix;
-    delete[] _row_status;
 
     _netsize = 0;
     _st      = 0;
@@ -60,9 +60,9 @@ int Omega::concat(int input, int extra, int output) const{ return output | (inpu
 void Omega::unroute(int word){
     for(int j=0; j<_st+_ex; j++){
         int i = window(word,j);
-        _row_status[i][j]  -= 1;
-        if(_row_status[i][j] == 0)
-            _route_matrix[i][j] = 0;
+        _route_matrix[i][j]  -= 1;
+        if(_route_matrix[i][j] == 0)
+            _switch[i][j] = 0;
     }
 }
 
@@ -85,8 +85,8 @@ bool Omega::route(int input, int output){
 
             // se o caminho esta ocupado
             // senão, permute um bit extra
-            if(_row_status[i][j]) 
-                res = res && ( _route_matrix[i][j] == switch_code(word,j) ); 
+            if(_route_matrix[i][j]) 
+                res = res && ( _switch[i][j] == switch_code(word,j) ); 
         }
 
         // se encontrou um caminho...
@@ -96,8 +96,8 @@ bool Omega::route(int input, int output){
                 int i = window(word,j);
 
                 // marca o caminho que fez em circuit
-                _row_status[i][j]   += 1;
-                _route_matrix[i][j] = switch_code(word,j);
+                _route_matrix[i][j]   += 1;
+                _switch[i][j] = switch_code(word,j);
             } 
 
             /* marca na tabela qual caminho eu fiz para input/output */
@@ -136,8 +136,8 @@ void Omega::dealloc(const Architecture&arc, int pe){
 void Omega::clear(){ // reseta a rede
     for(int i=0; i<_netsize; i++){
         for(int j=0; j<_st+_ex; j++){
-            _route_matrix[i][j] = 0;
-            _row_status[i][j]   = 0;
+            _switch[i][j] = 0;
+            _route_matrix[i][j]   = 0;
         }
     }
 }
@@ -151,7 +151,7 @@ void Omega::display() const{
     for(int i=0; i<_netsize; i++){
         cout << i << "\t";
         for(int j=0; j<_st+_ex; j++){
-            cout << _row_status[i][j] << " ";
+            cout << _route_matrix[i][j] << " ";
         } cout << "\n";
     } 
 }
