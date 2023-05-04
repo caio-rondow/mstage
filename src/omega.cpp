@@ -22,13 +22,20 @@ Omega::Omega(int netsize, int st, int ex, int radix){
     clear();
 }
 
-Omega::~Omega(){
+Omega::~Omega(){ destroy(); }
 
-    _netsize = 0;
-    _st      = 0;
-    _ex      = 0;
-    _exsize  = 0;
-    _mask    = 0;
+/* Aux. Functions */
+void Omega::create(){
+    _route_matrix = nullptr;
+    _row_status   = nullptr;
+    _netsize      = 0;
+    _st           = 0;
+    _ex           = 0;
+    _exsize       = 0;
+    _mask         = 0;
+}
+
+void Omega::destroy(){
 
     for(int i=0; i<_netsize; i++){
         delete[] _route_matrix[i];
@@ -36,9 +43,14 @@ Omega::~Omega(){
     }
     delete[] _route_matrix;
     delete[] _row_status;
+
+    _netsize = 0;
+    _st      = 0;
+    _ex      = 0;
+    _exsize  = 0;
+    _mask    = 0;
 }
 
-/* Aux. Functions */
 int Omega::window(int word, int col) const{ return ( word >> ( 2*(_st+_ex)- 2*(col+1) ) ) & _mask; }
 
 int Omega::switch_code(int word, int col) const{ return ( word >> ( 2*(2*_st+_ex-1) - 2*col ) ) & 3; }
@@ -46,7 +58,6 @@ int Omega::switch_code(int word, int col) const{ return ( word >> ( 2*(2*_st+_ex
 int Omega::concat(int input, int extra, int output) const{ return output | (input<<(2*_st+2*_ex)) | (extra<<(2*_st)); }
 
 void Omega::unroute(int word){
-
     for(int j=0; j<_st+_ex; j++){
         int i = window(word,j);
         _row_status[i][j]  -= 1;
@@ -122,7 +133,6 @@ void Omega::dealloc(const Architecture&arc, int pe){
     }
 }
 
-
 void Omega::clear(){ // reseta a rede
     for(int i=0; i<_netsize; i++){
         for(int j=0; j<_st+_ex; j++){
@@ -133,7 +143,6 @@ void Omega::clear(){ // reseta a rede
 }
 
 void Omega::display() const{
-
     cout << "\t";
     for(int i=0; i<_st+_ex; i++){
         cout << i << " ";

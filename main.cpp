@@ -1,24 +1,18 @@
-#include "include/omega.h"
-#include "include/digraph.h"
-#include "include/architecture.h"
-#include "include/dataloader.h"
+#include "include/solution.h"
 
 int main(){
 
-    /* LOAD CONFIG. FILE AND GRAPH */
-    DataLoader loader;
-    Architecture arc = loader.read_json("default_arch128x2.json");
-    Digraph G        = loader.read_dot("debug.dot");
-
-    /* CREATE OMEGA NETWORK */
-    Omega net(256,4,1);
-
-    int node2pe[arc.size()]; // which PE node i is
-    int pe2node[arc.size()]; // which node PE i have
+    /* INIT SOLUTION */
+    string json_file = "misc/default_arch128x2.json";
+    string dot_file  = "misc/debug.dot";
+    
+    Solution solveby(json_file, dot_file);
     
     /* GREEDY INITIAL SOLUTION */
+    solveby.greedy();
 
     /* LOCAL SEARCH */
+    solveby.local_search();
 
     /* METAHEURISTIC */
 
