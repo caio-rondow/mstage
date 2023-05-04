@@ -93,6 +93,7 @@ const Architecture DataLoader::read_json(const string&filename) const{
     // Get the size of the input and output vectors
     int num_pes = root["num_pes"].asInt();
 
+
     // Read the input and output vectors for each PE
     vector<vector<int>> input(num_pes);
     vector<vector<int>> output(num_pes);

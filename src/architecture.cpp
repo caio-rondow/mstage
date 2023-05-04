@@ -17,6 +17,7 @@ Architecture &Architecture::operator=(const Architecture&other){
     if (this == &other) return *this;
     _pe_input  = other._pe_input;
     _pe_output = other._pe_output;
+    _num_pes   = other._num_pes;
 
     return *this;
 }
