@@ -10,7 +10,7 @@ int main(){
     
     /* GREEDY INITIAL SOLUTION */
     solveby.greedy();
-
+    
     /* LOCAL SEARCH */
     solveby.local_search();
 
