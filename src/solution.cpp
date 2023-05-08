@@ -1,17 +1,17 @@
 #include "../include/solution.h"
 
-Solution::Solution(const string&json_file, const string&dot_file){
+Solution::Solution(const string&json_file, const string&dot_file, int copy){
 
     /* LOAD CONFIG. FILE AND GRAPH */
     DataLoader loader;
-    G   = loader.read_dot(dot_file);
+    G   = loader.read_dot(dot_file, copy);
     arc = loader.read_json(json_file);
 
     /* CREATE OMEGA NETWORK */
     Omega net(256,4,1);
 }
 
-void Solution::_alloc_node(vector<int>&node2pe,vector<int>&pe2node,int num_pes, int u, int v){
+bool Solution::_alloc_node(vector<int>&node2pe,vector<int>&pe2node,int num_pes, int u, int v){
     
     int peU, peV;
     for(int i=0; i<num_pes; i++){
@@ -45,19 +45,37 @@ void Solution::_alloc_node(vector<int>&node2pe,vector<int>&pe2node,int num_pes, 
                         node2pe[v] = peV;
                         pe2node[peU] = u;
                         pe2node[peV] = v;
-                        return;
+                        return true;
                     }
                 }
             }
         }
     }
+
+    /* case where node are not alloc? */
+
+    return false;
 }
 
 vector<int> Solution::greedy(){
 
+    if(arc.size()<G.number_of_nodes()){
+
+        cout << G.number_of_nodes() << ", ";
+        cout << G.number_of_edges() << ", ";
+        cout << arc.size() << ", ";
+        cout << "0%\n";
+
+        cerr << "This graph does not fit into the architecture.\n";
+        cerr << "graph has " << G.number_of_nodes() << " nodes and arch. has " << arc.size() << " cells.\n";
+        exit(1);
+    }
+
     int num_pes = arc.size();
     vector<int> node2pe(num_pes,-1);
     vector<int> pe2node(num_pes,-1);
+
+    int counter=0;
 
     for(auto &e:G.edges()){
         /* get edge */
@@ -65,13 +83,17 @@ vector<int> Solution::greedy(){
         int v = e.second;
 
         /* alloc node u and v to a pe */
-        _alloc_node(node2pe,pe2node,num_pes,u,v);
+        bool ans = _alloc_node(node2pe,pe2node,num_pes,u,v);
+        if(ans){
+            counter += 1;
+        }
     }
 
     /* DEBUG */
-    for(auto &pe:node2pe)
-        cout << pe << " ";
-    cout << "\n";
+    cout << G.number_of_nodes() << ", ";
+    cout << G.number_of_edges() << ", ";
+    cout << arc.size() << ", ";
+    cout << (100.0*counter)/G.number_of_edges() << "%\n";
 
     return node2pe;
 }

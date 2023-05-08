@@ -1,12 +1,15 @@
 #include "include/solution.h"
 
-int main(){
+int main(int argc, char **argv){
 
     /* INIT SOLUTION */
-    string json_file = "misc/default_arch128x2.json";
-    string dot_file  = "misc/debug.dot";
+    string json_file = "misc/arch/default_arch128x2.json";
+    string dot_file  = argv[1];
+    int copy         = atoi(argv[2]);
+
+    cout << dot_file << ", " << copy << ", ";
     
-    Solution solveby(json_file, dot_file);
+    Solution solveby(json_file, dot_file, copy);
     
     /* GREEDY INITIAL SOLUTION */
     solveby.greedy();
