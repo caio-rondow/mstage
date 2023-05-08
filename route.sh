@@ -57,10 +57,13 @@ MAX_IN_NET=(
     10 # simple
 )
 
-g++ main.cpp src/*.cpp -ljsoncpp
+# COMPILE CODE 
+make -s
+
+# CLEAN ANSWER 
 > result.csv
+
 # RUN CODE HERE
 for ((i=0; i < ${#GRAPH[@]}; i++)) do
     ./a.out misc/graph/${GRAPH[i]} ${MAX_IN_NET[i]} >> result.csv
-
 done

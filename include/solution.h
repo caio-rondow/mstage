@@ -12,7 +12,7 @@ private:
     Digraph G;
     Architecture arc;
 
-    bool _alloc_node(vector<int>&node2pe,vector<int>&pe2node,int num_pes,int u, int v);
+    bool _alloc_node_into_pe(vector<int>&node2pe,vector<int>&pe2node,int num_pes,int u, int v);
 
 public:
     // Constructor

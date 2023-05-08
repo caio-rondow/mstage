@@ -1,4 +1,4 @@
-#include "include/solution.h"
+#include "../include/solution.h"
 
 int main(int argc, char **argv){
 

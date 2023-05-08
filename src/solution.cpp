@@ -11,7 +11,7 @@ Solution::Solution(const string&json_file, const string&dot_file, int copy){
     Omega net(256,4,1);
 }
 
-bool Solution::_alloc_node(vector<int>&node2pe,vector<int>&pe2node,int num_pes, int u, int v){
+bool Solution::_alloc_node_into_pe(vector<int>&node2pe,vector<int>&pe2node,int num_pes, int u, int v){
     
     int peU, peV;
     for(int i=0; i<num_pes; i++){
@@ -83,7 +83,7 @@ vector<int> Solution::greedy(){
         int v = e.second;
 
         /* alloc node u and v to a pe */
-        bool ans = _alloc_node(node2pe,pe2node,num_pes,u,v);
+        bool ans = _alloc_node_into_pe(node2pe,pe2node,num_pes,u,v);
         if(ans){
             counter += 1;
         }
