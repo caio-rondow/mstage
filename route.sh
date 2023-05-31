@@ -65,5 +65,5 @@ make -s
 
 # RUN CODE HERE
 for ((i=0; i < ${#GRAPH[@]}; i++)) do
-    ./a.out misc/graph/${GRAPH[i]} ${MAX_IN_NET[i]} >> result.csv
+    ./build/apps/program misc/graph/${GRAPH[i]} ${MAX_IN_NET[i]} >> result.csv
 done

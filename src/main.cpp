@@ -1,5 +1,16 @@
 #include "../include/solution.h"
 
+bool assert_ans(const vector<int>&ans, int n){
+    for(int i=0; i<n; i++){
+        for(int j=0; j<n; j++){
+            if((i != j && ans[i] == ans[j]) || ans[j] == -1){
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 int main(int argc, char **argv){
 
     /* INIT SOLUTION */
@@ -12,10 +23,20 @@ int main(int argc, char **argv){
     Solution solveby(json_file, dot_file, copy);
     
     /* GREEDY INITIAL SOLUTION */
-    solveby.greedy();
-    
+    vector<int> ans = solveby.greedy();
+
+    if(assert_ans(ans, ans.size())){
+        cerr << "invalid answer.\n";
+        exit(1);
+    }
+
     /* LOCAL SEARCH */
-    solveby.local_search();
+    ans = solveby.local_search(ans);
+    
+    if(assert_ans(ans, ans.size())){
+        cerr << "invalid answer.\n";
+        exit(1);
+    }
 
     /* METAHEURISTIC */
 

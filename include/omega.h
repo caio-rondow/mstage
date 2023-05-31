@@ -5,6 +5,9 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
+#include <queue>
+
+#define NUM_PES 128
 
 using namespace std;
 
@@ -15,8 +18,8 @@ private:
     int **_switch;                          // shows route in switch
     int **_route_matrix;                    // shows if a wire is in use
     int _netsize, _st, _ex, _exsize, _mask; // parametros da rede
-    vector<vector<int>> _in_neighbor;
-    vector<int> _out_predecessor;
+    
+	vector<queue<int>> conn;    // keep track of the connections made in network
 
     // Aux. Functions
     void create();
@@ -33,8 +36,8 @@ public:
     ~Omega();
 
     // Methods
-    bool route(int input, int output);
-    void dealloc(const Architecture&arc, int pe);
+    bool route(int input, int output, int pein, int peout);
+    int dealloc(const Architecture&arc, int pe);
     void display() const;
     void clear();
 };

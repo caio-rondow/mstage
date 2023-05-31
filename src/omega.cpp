@@ -16,8 +16,7 @@ Omega::Omega(int netsize, int st, int ex, int radix){
         _route_matrix[i]   = new int[_st+ex];
     }
 
-    _out_predecessor = vector<int>(_netsize,-1);
-    _in_neighbor     = vector<vector<int>>(_netsize);
+	conn = vector<queue<int>>(NUM_PES);
 
     clear();
 }
@@ -67,7 +66,7 @@ void Omega::unroute(int word){
 }
 
 /* Methods */
-bool Omega::route(int input, int output){
+bool Omega::route(int input, int output, int receiver_pe, int sender_pe){
 
     for(int extra=0; extra<_exsize; extra++){
 
@@ -101,9 +100,9 @@ bool Omega::route(int input, int output){
             } 
 
             /* marca na tabela qual caminho eu fiz para input/output */
-            _in_neighbor[input].push_back(word);
-            _out_predecessor[output] = word;
-
+            conn[receiver_pe].push(word);
+            conn[sender_pe].push(word);
+		
             return true;
         }
     }
@@ -111,26 +110,17 @@ bool Omega::route(int input, int output){
     return false;
 }
 
-void Omega::dealloc(const Architecture&arc, int pe){
-    /* get PE input/output */
-    vector<int> pe_input  = arc.iport(pe);
-    vector<int> pe_output = arc.oport(pe);
-
-    /* iterate over the pe input/output and unroute them */
-    for(auto &input:pe_input){
-        int word = _out_predecessor[input];
-        /* check if there is a valid word */
-        if(word >= 0){
-            unroute(word);
-            _out_predecessor[input] = -1;
-        }
+int Omega::dealloc(const Architecture&arc, int pe){
+    int num_dealloc_conn = 0;
+    while(!conn[pe].empty()){
+        /* remove from queue */
+        int word = conn[pe].front();
+        conn[pe].pop();
+        /* undo connection */
+        unroute(word);
+        num_dealloc_conn++;
     }
-    for(auto &output:pe_output){
-        for(auto &word:_in_neighbor[output]){
-            unroute(word);
-        }
-        _in_neighbor[output].erase(_in_neighbor[output].begin(), _in_neighbor[output].end());
-    }
+    return num_dealloc_conn;
 }
 
 void Omega::clear(){ // reseta a rede

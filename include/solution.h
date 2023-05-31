@@ -13,6 +13,10 @@ private:
     Architecture arc;
 
     bool _alloc_node_into_pe(vector<int>&node2pe,vector<int>&pe2node,int num_pes,int u, int v);
+    bool _evaluate(const vector<int>&node2pe);
+    vector<int> _neighbor(vector<int>node2pe, int i, int j);
+
+    int _eval(vector<int>&S);
 
 public:
     // Constructor
@@ -20,7 +24,7 @@ public:
 
     // Methods 
     vector<int> greedy();
-    void local_search();
+    vector<int> local_search(vector<int>&initial_solution);
 };
 
 #endif

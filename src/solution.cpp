@@ -39,7 +39,7 @@ bool Solution::_alloc_node_into_pe(vector<int>&node2pe,vector<int>&pe2node,int n
             /* test all route connections */
             for(const int &pout:arc.oport(peU)){        
                 for(const int &pin:arc.iport(peV)){
-                    if(net.route(pout, pin)){
+                    if(net.route(pout, pin, peU, peV)){
                         /* mark pe as used */
                         node2pe[u] = peU;
                         node2pe[v] = peV;
@@ -51,8 +51,23 @@ bool Solution::_alloc_node_into_pe(vector<int>&node2pe,vector<int>&pe2node,int n
             }
         }
     }
-
+    
     /* case where node are not alloc? */
+    for(int i=0; i<num_pes; i++){
+        
+        if(node2pe[u]!=-1 && node2pe[v]!=-1)
+            break;
+
+        if(pe2node[i] == -1){            
+            if(node2pe[u] == -1){
+                pe2node[i] = u;
+                node2pe[u] = i;
+            } else if(node2pe[v] == -1){
+                pe2node[i] = v;
+                node2pe[v] = i;
+            }
+        }
+    }
 
     return false;
 }
@@ -61,10 +76,12 @@ vector<int> Solution::greedy(){
 
     if(arc.size()<G.number_of_nodes()){
 
+        /* DEBUG TIRAR DEPOIS */
         cout << G.number_of_nodes() << ", ";
         cout << G.number_of_edges() << ", ";
         cout << arc.size() << ", ";
         cout << "0%\n";
+        /* DEBUG TIRAR DEPOIS */
 
         cerr << "This graph does not fit into the architecture.\n";
         cerr << "graph has " << G.number_of_nodes() << " nodes and arch. has " << arc.size() << " cells.\n";
@@ -72,9 +89,8 @@ vector<int> Solution::greedy(){
     }
 
     int num_pes = arc.size();
-    vector<int> node2pe(num_pes,-1);
+    vector<int> node2pe(G.number_of_nodes(),-1);
     vector<int> pe2node(num_pes,-1);
-
     int counter=0;
 
     for(auto &e:G.edges()){
@@ -89,13 +105,89 @@ vector<int> Solution::greedy(){
         }
     }
 
-    /* DEBUG */
-    cout << G.number_of_nodes() << ", ";
-    cout << G.number_of_edges() << ", ";
-    cout << arc.size() << ", ";
-    cout << (100.0*counter)/G.number_of_edges() << "%\n";
+    /* DEBUG TIRAR DEPOIS */
+    // cout << G.number_of_nodes() << ", ";
+    // cout << G.number_of_edges() << ", ";
+    // cout << arc.size() << ", ";
+    // cout << (100.0*counter)/G.number_of_edges() << "%\n";
+    /* DEBUG TIRAR DEPOIS */
+
+    // cout << "FINAL COST GREEDY: " << counter << "\n";
 
     return node2pe;
 }
 
-void Solution::local_search(){}
+int Solution::_eval(vector<int>&S){
+
+    Omega new_net(256,4,1);
+    int cost = 0;
+    
+    for(auto &edge:G.edges()){
+        int u = edge.first;
+        int v = edge.second;
+        
+        int peU = S[u];
+        int peV = S[v];
+        
+        bool routed = false;
+
+        /* test all route connections */
+        for(const int &pout:arc.oport(peU)){        
+            for(const int &pin:arc.iport(peV)){
+                if(new_net.route(pout, pin, peU, peV)){
+                    cost++;
+                    routed = true;
+                    break;
+                }
+            }
+            if(routed)
+                break;
+        }
+    }
+
+    return cost;
+}
+
+vector<int> Solution::local_search(vector<int>&initial_solution){
+
+    // init
+    vector<int> S = initial_solution;
+    int curr_cost = _eval(S);
+
+    bool is_improved = true;
+    int best_i = -1;
+    int best_j = -1;
+    int num_nodes = S.size();
+
+    while(is_improved){
+
+        is_improved = false;
+
+        for(int i=0; i<num_nodes; i++){
+            for(int j=i+1; j<num_nodes; j++){
+               
+                swap(S[i], S[j]);
+                int new_cost = _eval(S);
+
+                if(new_cost > curr_cost){
+                    curr_cost = new_cost;
+                    best_i = i;
+                    best_j = j;
+                    is_improved = true;
+                }
+                swap(S[i], S[j]);
+            }
+        }
+
+        if(is_improved){
+            swap(S[best_i], S[best_j]);
+        }
+    }
+
+    cout << G.number_of_nodes() << ", ";
+    cout << G.number_of_edges() << ", ";
+    cout << arc.size() << ", ";
+    cout << (100.0*curr_cost)/G.number_of_edges() << "%\n";
+
+    return S;
+}
