@@ -1,0 +1,8 @@
+{
+    "filename":"random_config.json",
+    "netsize":256,
+    "config":{
+        "input" :{"1":156, "2":38, "3":8},
+        "output":{"1":142, "2":45, "3":3}
+    }
+}
