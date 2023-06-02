@@ -40,8 +40,8 @@ def generate_architecture(filename, config, netsize, arcsize):
     # divide labels into sets of wires
     input_label  = split_tuples(input_label, input[1], input[2])
     output_label = split_tuples(output_label, output[1], output[2])
-    rand.shuffle(input_label)
-    rand.shuffle(output_label)
+    # rand.shuffle(input_label)
+    # rand.shuffle(output_label)
 
     _str=""
     pe_i = 0

@@ -8,7 +8,7 @@ Solution::Solution(const string&json_file, const string&dot_file, int copy){
     arc = loader.read_json(json_file);
 
     /* CREATE OMEGA NETWORK */
-    Omega net(256,4,1);
+    Omega net(N,STAGE,EXTRA);
 }
 
 bool Solution::_alloc_node_into_pe(vector<int>&node2pe,vector<int>&pe2node,int num_pes, int u, int v){
@@ -38,7 +38,7 @@ bool Solution::_alloc_node_into_pe(vector<int>&node2pe,vector<int>&pe2node,int n
 
             /* test all route connections */
             for(const int &pout:arc.oport(peU)){        
-                for(const int &pin:arc.iport(peV)){
+                for(const int &pin:arc.iport(peV)){                   
                     if(net.route(pout, pin, peU, peV)){
                         /* mark pe as used */
                         node2pe[u] = peU;
@@ -110,16 +110,15 @@ vector<int> Solution::greedy(){
     // cout << G.number_of_edges() << ", ";
     // cout << arc.size() << ", ";
     // cout << (100.0*counter)/G.number_of_edges() << "%\n";
-    /* DEBUG TIRAR DEPOIS */
-
     // cout << "FINAL COST GREEDY: " << counter << "\n";
+    /* DEBUG TIRAR DEPOIS */
 
     return node2pe;
 }
 
 int Solution::_eval(vector<int>&S){
 
-    Omega new_net(256,4,1);
+    Omega new_net(N,STAGE,EXTRA);
     int cost = 0;
     
     for(auto &edge:G.edges()){

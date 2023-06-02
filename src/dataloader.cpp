@@ -26,7 +26,6 @@ const Digraph DataLoader::read_dot(const string&filename, int copy) const{
                 string from = match[1].str()+"_"+to_string(copy);
                 string to   = match[2].str()+"_"+to_string(copy);
 
-
                 // check if 'from_node' are mapped
                 if (nodeMap.count(from) == 0) {
                     nodeMap[from] = num_nodes++;
@@ -112,7 +111,6 @@ const Architecture DataLoader::read_json(const string&filename) const{
         for(int j=0; j<outsize; j++){
             output[i].push_back( pe["output"][j].asInt() );
         }
-
     }
 
     Architecture arc(input,output,num_pes);

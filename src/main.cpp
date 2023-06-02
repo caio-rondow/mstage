@@ -14,15 +14,15 @@ bool assert_ans(const vector<int>&ans, int n){
 int main(int argc, char **argv){
 
     /* INIT SOLUTION */
-    string json_file = "misc/arch/default_arch128x2.json";
-    string dot_file  = argv[1];
-    int copy         = atoi(argv[2]);
+    string json_file = argv[1];
+    string dot_file  = argv[2];
+    int copy         = atoi(argv[3]);
 
     cout << dot_file << ", " << copy << ", ";
     
     Solution solveby(json_file, dot_file, copy);
     
-    /* GREEDY INITIAL SOLUTION */
+    // /* GREEDY INITIAL SOLUTION */
     vector<int> ans = solveby.greedy();
 
     if(assert_ans(ans, ans.size())){
@@ -38,7 +38,7 @@ int main(int argc, char **argv){
         exit(1);
     }
 
-    /* METAHEURISTIC */
+    // /* METAHEURISTIC */
 
     return 0;
 }

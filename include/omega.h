@@ -7,7 +7,7 @@
 #include <cmath>
 #include <queue>
 
-#define NUM_PES 128
+#define NUM_PES 256
 
 using namespace std;
 

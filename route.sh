@@ -1,6 +1,32 @@
 arg=$1      # simulate a single graph
 str="all"   # simulate all graphs
 
+# .json ARCHS
+ARCH=(
+    default_arch128x2.json  # Cplx8
+    default_arch128x2.json  # FilterRGB
+    default_arch128x2.json  # Fir16
+    default_arch128x2.json  # arf
+    default_arch128x2.json  # conv3
+    default_arch128x2.json  # cosine1
+    default_arch128x2.json  # cosine2
+    default_arch128x2.json  # ewf
+    default_arch128x2.json  # feedback_points
+    default_arch128x2.json  # fir
+    default_arch128x2.json  # fir1
+    default_arch128x2.json  # fir2
+    default_arch128x2.json  # h2v2_smooth
+    default_arch128x2.json  # horner_bezier_surf
+    default_arch128x2.json  # interpolate_aux
+    jpeg_fdct_islow_config.json  # jpeg_fdct_islow
+    jpeg_idct_ifast_config.json  # jpeg_idct_ifast
+    k4n4op_config.json      # k4n4op
+    default_arch128x2.json  # mac
+    default_arch128x2.json  # motion_vectors
+    default_arch128x2.json  # mults1
+    default_arch128x2.json  # simple
+)
+
 # .dot GRAPHS
 if [[ "$#" == 0 || "$arg" == "$str" ]]; then
     GRAPH=(
@@ -30,7 +56,6 @@ if [[ "$#" == 0 || "$arg" == "$str" ]]; then
 elif [ -e misc/graph/"$arg.dot" ]; then
     GRAPH=("$arg.dot")
 fi
-
 
 MAX_IN_NET=(
     2 # Cplx8
@@ -65,5 +90,5 @@ make -s
 
 # RUN CODE HERE
 for ((i=0; i < ${#GRAPH[@]}; i++)) do
-    ./build/apps/program misc/graph/${GRAPH[i]} ${MAX_IN_NET[i]} >> result.csv
+    ./build/apps/program misc/arch/${ARCH[i]} misc/graph/${GRAPH[i]} ${MAX_IN_NET[i]} >> result.csv
 done
