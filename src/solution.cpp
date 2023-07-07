@@ -9,184 +9,398 @@ Solution::Solution(const string&json_file, const string&dot_file, int copy){
 
     /* CREATE OMEGA NETWORK */
     Omega net(N,STAGE,EXTRA);
-}
 
-bool Solution::_alloc_node_into_pe(vector<int>&node2pe,vector<int>&pe2node,int num_pes, int u, int v){
-    
-    int peU, peV;
-    for(int i=0; i<num_pes; i++){
-        
-        /* select a free peU */
-        if(node2pe[u] == -1){
-            if(pe2node[i] != -1)
-                continue;
-            peU = i;
-        } else{
-            peU = node2pe[u];
-        }
-
-        for(int j=0; j<num_pes; j++){
-
-            /* select a free peV */
-            if(node2pe[v] == -1){
-                if(pe2node[j] != -1 || i == j)
-                    continue;
-                peV = j;
-            } else{
-                peV = node2pe[v];
-            }
-
-            /* test all route connections */
-            for(const int &pout:arc.oport(peU)){        
-                for(const int &pin:arc.iport(peV)){                   
-                    if(net.route(pout, pin, peU, peV)){
-                        /* mark pe as used */
-                        node2pe[u] = peU;
-                        node2pe[v] = peV;
-                        pe2node[peU] = u;
-                        pe2node[peV] = v;
-                        return true;
-                    }
-                }
-            }
+    for(int i=0; i<N; i++){
+        for(int j=0; j<N; j++){
+            visited[i][j] = -1;
         }
     }
-    
-    /* case where node are not alloc? */
-    for(int i=0; i<num_pes; i++){
-        
-        if(node2pe[u]!=-1 && node2pe[v]!=-1)
-            break;
-
-        if(pe2node[i] == -1){            
-            if(node2pe[u] == -1){
-                pe2node[i] = u;
-                node2pe[u] = i;
-            } else if(node2pe[v] == -1){
-                pe2node[i] = v;
-                node2pe[v] = i;
-            }
-        }
-    }
-
-    return false;
 }
 
-vector<int> Solution::greedy(){
+void Solution::clear(){
+
+    net.clear();
+    for(int i=0; i<N; i++){
+        for(int j=0; j<N; j++){
+            visited[i][j] = -1;
+        }
+    }  
+}
+
+int Solution::size() const{ return arc.size(); }
+
+int Solution::get_optimum() const{ return G.number_of_edges(); }
+
+void Solution::info() const{
+    cout << "------------------------------------------------\n";
+    cout << "Graph and Arquitecture:\n";
+    cout << "\tnumber of nodes:\t" << G.number_of_nodes() << "\n";
+    cout << "\tnumber of edges:\t" << G.number_of_edges() << "\n";
+    cout << "\tnumber of pes  :\t" << arc.size()          << "\n\n";
+
+    cout << "Network:\n";
+    cout << "\tnumber of input/output:\t" << N << "\n";
+    cout << "\tnumber of stages      :\t" << STAGE << "\n";
+    cout << "\tnumber of extra stages:\t" << EXTRA << "\n";
+    cout << "------------------------------------------------\n\n";
+}
+
+int Solution::greedy(vector<int>&solution, const string&search){
 
     if(arc.size()<G.number_of_nodes()){
-
-        /* DEBUG TIRAR DEPOIS */
-        cout << G.number_of_nodes() << ", ";
-        cout << G.number_of_edges() << ", ";
-        cout << arc.size() << ", ";
-        cout << "0%\n";
-        /* DEBUG TIRAR DEPOIS */
-
         cerr << "This graph does not fit into the architecture.\n";
         cerr << "graph has " << G.number_of_nodes() << " nodes and arch. has " << arc.size() << " cells.\n";
         exit(1);
     }
 
+    vector<int> pe2node(arc.size(),-1);
+    vector<pair<int,int>> edges;
+    vector<int> fail;
+
     int num_pes = arc.size();
-    vector<int> node2pe(G.number_of_nodes(),-1);
-    vector<int> pe2node(num_pes,-1);
-    int counter=0;
+
+    if(search=="bfs"){
+        edges = G.bfs_edges();
+    } else if(search=="dfs"){
+        edges = G.dfs_edges();
+    } else{
+        edges = G.edges();
+    }
 
     for(auto &e:G.edges()){
-        /* get edge */
-        int u = e.first;
-        int v = e.second;
 
-        /* alloc node u and v to a pe */
-        bool ans = _alloc_node_into_pe(node2pe,pe2node,num_pes,u,v);
-        if(ans){
-            counter += 1;
+        int node_i = e.first;
+        int node_j = e.second;
+        bool routed=false;
+        int pei,pej;
+        
+        int is_pe_i_alloc = (solution[node_i] == -1 ? 0 : 1);
+        int is_pe_j_alloc = (solution[node_j] == -1 ? 0 : 2);
+
+        int route_case = is_pe_i_alloc + is_pe_j_alloc;
+    
+        // self loop
+        if(node_i == node_j){
+
+            if(route_case == 0){
+
+                for(int pei=0; pei<num_pes; pei++){
+                    if(pe2node[pei]==-1 && _route(pei,pei) != FAIL){
+                        solution[node_i] = pei;
+                        pe2node[pei] = node_i;
+                    }
+                }
+
+            } else{
+                _route(solution[node_i], solution[node_i]);
+            }
+
+        } else{
+            
+            switch (route_case){
+                case 0: // ambos node_i e node_j não foram alocados
+                    
+                    for(int pei=0; pei<num_pes; pei++){
+                        
+                        if(pe2node[pei]!=-1){
+                            continue;
+                        }
+
+                        for(int pej=0; pej<num_pes; pej++){
+
+                            if( pei != pej && pe2node[pej]==-1 && _route(pei,pej) != FAIL){
+
+                                solution[node_i] = pei;
+                                solution[node_j] = pej;
+
+                                pe2node[pei] = node_i;
+                                pe2node[pej] = node_j;
+
+                                routed = true;
+                                break;
+                            }
+                        }
+                        if(routed)
+                            break;
+                    }
+
+                break;
+                
+                case 1: // somente node_i foi alocado
+
+                    pei = solution[node_i];
+
+                    for(int pej=0; pej<num_pes; pej++){
+                        
+                        if(pe2node[pej]==-1 && _route(pei,pej) != FAIL){
+
+                            solution[node_j] = pej;
+                            pe2node[pej] = node_j;
+                            break;
+                        }
+                    }
+
+                break;
+                
+                case 2: // somente node_j foi alocado
+
+                    pej = solution[node_j];
+
+                    for(int pei=0; pei<num_pes; pei++){
+
+                        if(pe2node[pei]==-1 && _route(pei,pej) != FAIL){
+                            
+                            solution[node_i] = pei;
+                            pe2node[pei] = node_i;
+                            break;
+                        }
+                    }
+
+                break;
+                
+                default: // ambos node_i e node_j foram alocados
+
+                    pei = solution[node_i];
+                    pej = solution[node_j];
+                    _route(pei,pej);
+
+                break;
+            }
         }
     }
 
-    /* DEBUG TIRAR DEPOIS */
-    // cout << G.number_of_nodes() << ", ";
-    // cout << G.number_of_edges() << ", ";
-    // cout << arc.size() << ", ";
-    // cout << (100.0*counter)/G.number_of_edges() << "%\n";
-    // cout << "FINAL COST GREEDY: " << counter << "\n";
-    /* DEBUG TIRAR DEPOIS */
+    // criando solução completa
+    for(int i=0; i<num_pes; i++){
+        bool failed=true;
+        for(int j=0; j<num_pes; j++){
+            if(i == solution[j]){
+                failed=false;
+                break;
+            }
+        }
+        if(failed){
+            fail.push_back(i);
+        }
+    }
 
-    return node2pe;
+    int k=0;
+    for(int i=0; i<num_pes; i++){
+        if(solution[i]==-1){
+            solution[i] = fail[k++];
+        }
+    }
+
+    int current_cost = evaluate_initial_solution(solution);
+
+    return current_cost;
 }
 
-int Solution::_eval(vector<int>&S){
+int Solution::evaluate_initial_solution(const vector<int>&solution){
 
-    Omega new_net(N,STAGE,EXTRA);
     int cost = 0;
+    clear();
     
-    for(auto &edge:G.edges()){
-        int u = edge.first;
-        int v = edge.second;
-        
-        int peU = S[u];
-        int peV = S[v];
-        
-        bool routed = false;
-
-        /* test all route connections */
-        for(const int &pout:arc.oport(peU)){        
-            for(const int &pin:arc.iport(peV)){
-                if(new_net.route(pout, pin, peU, peV)){
-                    cost++;
-                    routed = true;
-                    break;
-                }
-            }
-            if(routed)
-                break;
-        }
+    for(auto &node:G.nodes()){
+        cost+=_add_node_into_pe(solution, node, solution[node]);
     }
 
     return cost;
 }
 
-vector<int> Solution::local_search(vector<int>&initial_solution){
+int Solution::_route(int peu, int pev){
 
-    // init
-    vector<int> S = initial_solution;
-    int curr_cost = _eval(S);
-
-    bool is_improved = true;
-    int best_i = -1;
-    int best_j = -1;
-    int num_nodes = S.size();
-
-    while(is_improved){
-
-        is_improved = false;
-
-        for(int i=0; i<num_nodes; i++){
-            for(int j=i+1; j<num_nodes; j++){
-               
-                swap(S[i], S[j]);
-                int new_cost = _eval(S);
-
-                if(new_cost > curr_cost){
-                    curr_cost = new_cost;
-                    best_i = i;
-                    best_j = j;
-                    is_improved = true;
-                }
-                swap(S[i], S[j]);
+    for(const int &input:arc.oport(peu)){
+        for(const int &output:arc.iport(pev)){
+            int word = net.route(input, output);
+            if(word>=0){
+                return word;
             }
         }
+    }
+    return FAIL;
+}
 
-        if(is_improved){
-            swap(S[best_i], S[best_j]);
+int Solution::_add_node_into_pe(const vector<int>&solution, int node, int pe){
+
+    if(node < 0 || node >= G.number_of_nodes()){
+        return 0;
+    }
+
+    int added=0;
+    for(const int &predecessor:G.predecessors(node)){
+        
+        if(visited[predecessor][node]<0){
+
+            int word = _route(solution[predecessor], pe);
+            if(word != FAIL){
+                visited[predecessor][node] = word;
+                added++;
+            }
+        } 
+    }
+
+    for(const int &neighbor:G.neighbors(node)){
+
+        if(visited[node][neighbor]<0){
+
+            int word = _route(pe, solution[neighbor]);
+            if(word != FAIL){
+                visited[node][neighbor] = word;
+                added++;
+            }
+        } 
+    }
+
+    return added;
+}
+
+int Solution::_remove_node_from_pe(const vector<int>&solution, int node, int pe){
+
+    if(node<0 || node>=G.number_of_nodes())
+        return 0;
+
+    int removed=0;
+
+    for(const int &predecessor:G.predecessors(node)){
+        
+        int word = visited[predecessor][node];
+
+        if(net.unroute(word)){
+            removed++;
+            visited[predecessor][node] = FAIL;
+        }  
+    }
+
+    for(const int &neighbor:G.neighbors(node)){
+        
+        int word = visited[node][neighbor];
+
+        if(net.unroute(word)){
+            visited[node][neighbor] = FAIL;
+            removed++;
+        } 
+    }
+
+    return removed;
+}
+
+int Solution::_swap_two_nodes(vector<int>&solution, int current_cost, int node_i, int node_j){
+
+    if(node_i < 0 || node_j < 0|| node_i >= arc.size() || node_j >= arc.size()){
+        cerr << "NODE OUT OF RANGE: " << node_i << " " << node_j << "\n";
+        exit(1);
+    }
+
+    int removed=0;
+    int added=0;
+
+    if(node_i != node_j){
+
+        int pei = solution[node_i];
+        int pej = solution[node_j];
+
+        removed += _remove_node_from_pe(solution, node_i, pei);
+        removed += _remove_node_from_pe(solution, node_j, pej);
+        swap(solution[node_i], solution[node_j]);
+        added += _add_node_into_pe(solution, node_i, pej);
+        added += _add_node_into_pe(solution, node_j, pei);
+    }
+
+    return (current_cost - removed + added);
+}
+
+int Solution::local_search(vector<int>&solution, int cost){   
+
+    int num_pes = arc.size();
+    int current_cost = cost;
+    bool is_improving=true;
+
+    while( is_improving && current_cost!=G.number_of_edges() ){
+
+        is_improving = false;
+        
+        for(int i=0; i<num_pes; i++){
+            for(int j=i+1; j<num_pes; j++){
+
+                int new_cost = _swap_two_nodes(solution, current_cost, i, j);
+                
+                if(new_cost > G.number_of_edges()){
+                    cerr << "erro\n";
+                    exit(1);
+                }
+
+                if(new_cost > current_cost){
+                    current_cost = new_cost;
+                    is_improving = true;
+                }
+                else{
+                    current_cost = _swap_two_nodes(solution, new_cost, i, j);
+                }
+            }
         }
     }
 
-    cout << G.number_of_nodes() << ", ";
-    cout << G.number_of_edges() << ", ";
-    cout << arc.size() << ", ";
-    cout << (100.0*curr_cost)/G.number_of_edges() << "%\n";
+    return current_cost;
+}
 
-    return S;
+double Solution::acceptance_probability(int deltaC, double temp) const{
+    return exp(deltaC/temp);
+}
+
+int Solution::annealing(vector<int>&solution, int cost){
+
+    /* https://stackoverflow.com/questions/9878965/rand-between-0-and-1 */
+    mt19937_64 rng;
+    // initialize the random number generator with time-dependent seed
+    uint64_t timeSeed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+    std::seed_seq ss{uint32_t(timeSeed & 0xffffffff), uint32_t(timeSeed>>32)};
+    rng.seed(ss);
+    // initialize a uniform distribution between 0 and 1
+    uniform_real_distribution<double> unif(0, 1);
+    // initialize a uniform distribution between 0 and nodes-1
+    uniform_int_distribution<int> iunif(0, G.number_of_nodes()-1);
+
+    // int MAX_SWAPS = ((log10(MIN_TEMPERATURE) - log10(MAX_TEMPERATURE)) / log10(DECAY)) + 1;
+    // int *nodes_to_swap = new int[2*MAX_SWAPS];
+    // nodes_to_swap[0] = iunif(rng); 
+    // for(int i=1; i<2*MAX_SWAPS; i++){
+    //     do{
+    //         nodes_to_swap[i] = iunif(rng);
+    //     } while(nodes_to_swap[i] == nodes_to_swap[i-1]);
+    // }
+    // int k=0;
+
+    double temp = MAX_TEMPERATURE;
+    int current_cost = cost;
+    int node_i, node_j;
+
+    while(temp>=MIN_TEMPERATURE){
+        
+        node_i = iunif(rng);
+        do{
+            node_j=iunif(rng);
+        } while(node_j==node_i);
+
+        int new_cost = _swap_two_nodes(solution, current_cost, node_i, node_j);
+        int deltaC = new_cost - current_cost;
+
+        if(new_cost > G.number_of_edges()){
+            cerr << "erro\n";
+            exit(1);
+        }
+
+        double random_value = unif(rng);
+
+        if(deltaC>0 || random_value < acceptance_probability(deltaC, temp)){
+            current_cost = new_cost;
+        } else{
+            current_cost = _swap_two_nodes(solution, new_cost, node_i, node_j);
+        }
+
+        temp *= DECAY;
+    }
+ 
+    // delete[] nodes_to_swap;
+
+    return current_cost;
 }

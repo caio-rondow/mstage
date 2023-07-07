@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <iostream>
+#include "omega.h"
 using namespace std;
 
 class Architecture{
@@ -13,6 +14,7 @@ private:
     vector<vector<int>> _pe_input;
     vector<vector<int>> _pe_output;
     int _num_pes;
+
 
 public:
     // Constructor

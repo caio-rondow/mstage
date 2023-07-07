@@ -13,8 +13,8 @@ Digraph::Digraph(
     ):  neighbors_(neighbors), predecessors_(predecessors), 
         numEdges_(numEdges), numNodes_(numNodes){
 
-    out_degree_ = new int[numNodes];
-    in_degree_  = new int[numNodes];
+    out_degree_ = vector<int>(numNodes);
+    in_degree_  = vector<int>(numNodes);
 
     for(int i=0; i<numNodes; i++){
         out_degree_[i] = out_degree[i];
@@ -23,14 +23,10 @@ Digraph::Digraph(
 }
 
 void Digraph::create(){
-    out_degree_ = nullptr;
-    in_degree_ = nullptr;
     numEdges_ = numNodes_ = 0;
 }
 
 void Digraph::destroy(){
-    delete[] out_degree_;
-    delete[] in_degree_;
     numEdges_ = numNodes_ = 0;
 }
 
@@ -43,29 +39,36 @@ Digraph::Digraph(const Digraph &other){
 Digraph &Digraph::operator=(const Digraph &other){
     if(this==&other) return *this;
     destroy();
-    numNodes_ = other.numNodes_;
-    numEdges_ = other.numEdges_;
-    neighbors_ = other.neighbors_;
-    predecessors_ = other.predecessors_;
+    numNodes_       = other.numNodes_;
+    numEdges_       = other.numEdges_;
+    neighbors_      = other.neighbors_;
+    predecessors_   = other.predecessors_;
+    out_degree_     = other.out_degree_;
+    in_degree_      = other.in_degree_;
 
-    out_degree_ = new int[numNodes_];
-    in_degree_ = new int[numNodes_];
-
-    for(int i=0; i<numNodes_; i++){
-        out_degree_[i] = other.out_degree_[i];
-        in_degree_[i] = other.in_degree_[i];
-    }
 
     return *this;
 }
 
 const vector<vector<int>> &Digraph::neighbors() const{ return neighbors_; }
 
-const vector<int> &Digraph::neighbors(int node) const{ return neighbors_[node]; }
+const vector<int> &Digraph::neighbors(int node) const{ 
+    if(node<0 || node >= number_of_nodes()){
+        static const vector<int> empty;
+        return empty;
+    }
+    return neighbors_[node]; 
+}
 
 const vector<vector<int>> &Digraph::predecessors() const{ return predecessors_; }
 
-const vector<int> &Digraph::predecessors(int node) const{ return predecessors_[node]; }
+const vector<int> &Digraph::predecessors(int node) const{ 
+    if(node<0 || node >= number_of_nodes()){
+        static const vector<int> empty;
+        return empty;
+    }
+    return predecessors_[node]; 
+}
 
 int Digraph::out_degree(int node) const{ return out_degree_[node]; }
 
@@ -90,20 +93,6 @@ vector<pair<int,int>> Digraph::edges() const{
             pos++;
         } parent++;
     }
-
-    // /* TIRAR DEPOIS */ 
-
-    // sort(edges.begin(), edges.end(), [&](pair<int,int> a, pair<int,int> b) {
-    //     int u = a.first;
-    //     int v = b.first;
-
-    //     return out_degree(u) > out_degree(v);
-    // });
-
-    // // for(auto &e:edges)
-    //     // cout << e.first << " " << e.second << "\n";
-
-    // /* ============ */
 
     return edges;
 }
@@ -158,7 +147,6 @@ vector<pair<int,int>> Digraph::dfs_edges() const{
     /* start order */
     vector<int> nodes = this->nodes();
 
-
     vector<pair<int,int>> edges;
     vector<bool> visited(number_of_nodes(), false);
 
@@ -183,4 +171,31 @@ void Digraph::dfs(int source, int current, vector<pair<int,int>>&edges, vector<b
 
 bool Digraph::is_multicast(int node) const{
     return out_degree(node)>1;
+}
+
+void Digraph::add_edges_from(const vector<vector<int>>&neighbors, const vector<vector<int>>&predecessors){
+
+    int k = numNodes_;
+    for(auto &neighbor:neighbors){
+        neighbors_.push_back(vector<int>());
+
+        for(const int node:neighbor){
+            cout << "eita\n";
+            neighbors_[k++].push_back(node);
+            numEdges_++;
+        }
+    }
+
+    k = numNodes_;
+    for(auto &predecessor:predecessors){
+        predecessors_.push_back(vector<int>());
+
+        for(const int &node:predecessor){
+            cout << "eita\n";
+            predecessors_[k++].push_back(node);
+            numEdges_++;
+        }
+    }
+
+    numNodes_ += neighbors.size();
 }

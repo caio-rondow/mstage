@@ -3,8 +3,8 @@
 /* Constructor */
 Architecture::Architecture(){}
 Architecture::Architecture(const vector<vector<int>>&pe_input, const vector<vector<int>>&pe_output, int num_pes){
-    _pe_input  = pe_input;
     _pe_output = pe_output;
+    _pe_input  = pe_input;
     _num_pes   = num_pes;
 };
 
@@ -23,8 +23,13 @@ Architecture &Architecture::operator=(const Architecture&other){
 }
 
 /* Methods */
-const vector<int> &Architecture::iport(int pe) const{ return _pe_input[pe]; }
+const vector<int> &Architecture::iport(int pe) const{ 
+    
+    return _pe_input[pe]; 
+}
 
-const vector<int> &Architecture::oport(int pe) const{ return _pe_output[pe]; }
+const vector<int> &Architecture::oport(int pe) const{ 
+    return _pe_output[pe];
+}
 
 const int Architecture::size() const{ return _num_pes; }

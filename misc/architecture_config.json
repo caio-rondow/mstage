@@ -1,8 +1,8 @@
 {
-    "filename":"jpeg_fdct_islow_config.json",
+    "filename":"default_config.json",
     "netsize":256,
     "config":{
-        "input" :{"1":90, "2":83, "3":0},
-        "output":{"1":90, "2":83, "3":0}
+        "input" :{"1":0, "2":128, "3":0},
+        "output":{"1":0, "2":128, "3":0}
     }   
 }

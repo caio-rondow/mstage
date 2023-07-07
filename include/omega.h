@@ -2,12 +2,17 @@
 #define OMEGA_H
 
 #include "architecture.h"
+#include "digraph.h"
 #include <iostream>
 #include <vector>
 #include <cmath>
 #include <queue>
 
 #define NUM_PES 256
+#define FAIL -1
+#define N 256
+#define STAGE 4
+#define EXTRA 1
 
 using namespace std;
 
@@ -19,27 +24,27 @@ private:
     int **_route_matrix;                    // shows if a wire is in use
     int _netsize, _st, _ex, _exsize, _mask; // parametros da rede
     
-	vector<queue<int>> conn;    // keep track of the connections made in network
 
     // Aux. Functions
     void create();
     void destroy();
     
-    int window(int word, int col) const;
     int switch_code(int word, int col) const;
-    int concat(int input, int extra, int output) const;
-    void unroute(int word);
-
 public:
+    void desconcat(int word, int& input, int& extra, int& output) const;
+    int concat(int input, int extra, int output) const;
+    int window(int word, int col) const;
     // Constructor/Destructor
     Omega(int n=256, int st=4, int ex=1, int radix=4);
     ~Omega();
 
     // Methods
-    bool route(int input, int output, int pein, int peout);
-    int dealloc(const Architecture&arc, int pe);
+    int route(int input, int output);
+    bool unroute(int word);
     void display() const;
+    void display_switch() const;
     void clear();
+    vector<vector<int>> get_net();
 };
 
 #endif

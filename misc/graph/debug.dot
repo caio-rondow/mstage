@@ -3,4 +3,13 @@ digraph Debug{
     A -> C;
     C -> D;
     C -> E;
+    D -> F;
+    E -> F;
+    A -> A;
+    A -> G;
+    A -> H;
+    I -> J
+    K -> J
+    J -> L
+    M -> L
 }

@@ -11,17 +11,18 @@ Omega::Omega(int netsize, int st, int ex, int radix){
 
     _switch = new int*[netsize];
     _route_matrix   = new int*[netsize];
+
     for(int i=0; i<_netsize; i++){
         _switch[i] = new int[_st+_ex];
         _route_matrix[i]   = new int[_st+ex];
     }
 
-	conn = vector<queue<int>>(NUM_PES);
-
     clear();
 }
 
-Omega::~Omega(){ destroy(); }
+Omega::~Omega(){ 
+    destroy(); 
+}
 
 /* Aux. Functions */
 void Omega::create(){
@@ -56,17 +57,35 @@ int Omega::switch_code(int word, int col) const{ return ( word >> ( 2*(2*_st+_ex
 
 int Omega::concat(int input, int extra, int output) const{ return output | (input<<(2*_st+2*_ex)) | (extra<<(2*_st)); }
 
-void Omega::unroute(int word){
-    for(int j=0; j<_st+_ex; j++){
-        int i = window(word,j);
-        _route_matrix[i][j]  -= 1;
-        if(_route_matrix[i][j] == 0)
-            _switch[i][j] = 0;
+void Omega::desconcat(int word, int& input, int& extra, int& output) const{
+    input = (word>>(2*_st + 2*_ex))&_mask;
+    extra = (word>>(2*_st)&3);
+    output = (word&_mask);
+}
+
+bool Omega::unroute(int word){
+
+    if(word>=0){
+
+        for(int j=0; j<_st+_ex; j++){
+            int i = window(word,j);
+            if(_route_matrix[i][j] == 1){
+                _route_matrix[i][j]--;
+                _switch[i][j] = -1;
+            } else{
+                _route_matrix[i][j]--;
+            }     
+        }
+        
+        /* fala que desroteou */
+        return true;
     }
+
+    return false;
 }
 
 /* Methods */
-bool Omega::route(int input, int output, int receiver_pe, int sender_pe){
+int Omega::route(int input, int output){
 
     for(int extra=0; extra<_exsize; extra++){
 
@@ -94,40 +113,23 @@ bool Omega::route(int input, int output, int receiver_pe, int sender_pe){
 
                 int i = window(word,j);
 
-                // marca o caminho que fez em circuit
-                _route_matrix[i][j]   += 1;
+                // marca o caminho que fez
+                _route_matrix[i][j]++;
                 _switch[i][j] = switch_code(word,j);
             } 
 
-            /* marca na tabela qual caminho eu fiz para input/output */
-            conn[receiver_pe].push(word);
-            conn[sender_pe].push(word);
-		
-            return true;
+            return word;
         }
     }
 
-    return false;
-}
-
-int Omega::dealloc(const Architecture&arc, int pe){
-    int num_dealloc_conn = 0;
-    while(!conn[pe].empty()){
-        /* remove from queue */
-        int word = conn[pe].front();
-        conn[pe].pop();
-        /* undo connection */
-        unroute(word);
-        num_dealloc_conn++;
-    }
-    return num_dealloc_conn;
+    return FAIL;
 }
 
 void Omega::clear(){ // reseta a rede
     for(int i=0; i<_netsize; i++){
         for(int j=0; j<_st+_ex; j++){
-            _switch[i][j] = 0;
-            _route_matrix[i][j]   = 0;
+            _switch[i][j] = -1;
+            _route_matrix[i][j] = 0;
         }
     }
 }
@@ -144,4 +146,30 @@ void Omega::display() const{
             cout << _route_matrix[i][j] << " ";
         } cout << "\n";
     } 
+}
+
+void Omega::display_switch() const{
+
+    cout << "\t";
+    for(int i=0; i<_st+_ex; i++){
+        cout << i << " ";
+    } cout << "\n\n";
+
+    for(int i=0; i<_netsize; i++){
+        cout << i << "\t";
+        for(int j=0; j<_st+_ex; j++){
+            cout << _switch[i][j] << " ";
+        } cout << "\n";
+    } 
+
+}
+
+vector<vector<int>> Omega::get_net(){
+    vector<vector<int>> copy_net(_netsize, vector<int>(_st+_ex, 0));
+    for(int i=0; i<_netsize; i++){
+        for(int j=0; j<_st+_ex; j++){
+            copy_net[i][j] = _route_matrix[i][j];
+        }
+    }
+    return copy_net;
 }

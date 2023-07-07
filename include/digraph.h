@@ -17,8 +17,8 @@ private:
     /* parameters of the graph */
     int numEdges_, numNodes_;
     /* map the in/out degree of a node */
-    int *out_degree_;
-    int *in_degree_;
+    vector<int> out_degree_;
+    vector<int> in_degree_;
 
     /* maintain the object in standard order */
     void create();
@@ -67,6 +67,9 @@ public:
 
     /* check if a node is multicast */
     bool is_multicast(int node) const;
+
+    /* add nodes from a vector */
+    void add_edges_from(const vector<vector<int>>&neighbors, const vector<vector<int>>&predecessors);
 };
 
 #endif

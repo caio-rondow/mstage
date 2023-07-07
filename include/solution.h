@@ -5,10 +5,12 @@
 #include "digraph.h"
 #include "dataloader.h"
 #include "architecture.h"
+#include <random>
+#include <chrono>
 
-#define N 256
-#define STAGE 4
-#define EXTRA 0
+#define MAX_TEMPERATURE 100.0
+#define MIN_TEMPERATURE 0.0001
+#define DECAY 0.999
 
 class Solution {
 private: 
@@ -16,18 +18,30 @@ private:
     Digraph G;
     Architecture arc;
 
-    /* remove those functions later... (they are not part of this class) */
-    bool _alloc_node_into_pe(vector<int>&node2pe,vector<int>&pe2node,int num_pes,int u, int v);
-    int _eval(vector<int>&S);
+    int visited[N][N];
+
+    int _swap_two_nodes(vector<int>&solution, int cost, int node_i, int node_j);
+    int _remove_node_from_pe(const vector<int>&solution, int node, int pe);
+    int _add_node_into_pe(const vector<int>&solution, int node, int pe);
+
+    int _route(int peu, int pev);
+
+    double acceptance_probability(int deltaC, double temp) const;
 
 public:
     // Constructor
     Solution(const string&json_file, const string&dot_file, int copy);
 
     // Methods 
-    vector<int> greedy();
-    vector<int> local_search(vector<int>&initial_solution);
-    vector<int> annealing(vector<int>&initial_solution);
+    int evaluate_initial_solution(const vector<int>&solution);
+    int greedy(vector<int>&solution, const string&search="");
+    int local_search(vector<int>&solution, int cost);
+    int annealing(vector<int>&solution, int cost);
+
+    int get_optimum() const;
+    void info() const;
+    int size() const;
+    void clear();
 };
 
 #endif
