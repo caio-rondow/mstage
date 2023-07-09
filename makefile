@@ -1,6 +1,6 @@
 CXX      := -c++
 CXXFLAGS := -pedantic-errors -Wall
-LDFLAGS  := -L/usr/lib -lstdc++ -lm -ljsoncpp
+LDFLAGS  := -L/usr/lib -lstdc++ -lm -ljsoncpp -O3
 BUILD    := ./build
 OBJ_DIR  := $(BUILD)/objects
 APP_DIR  := $(BUILD)/apps

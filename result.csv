@@ -1,13 +1,4 @@
-misc/merged_graph/ewf_ewf_ewf_conv3.dot
-------------------------------------------------
-Graph and Arquitecture:
-	number of nodes:	126
-	number of edges:	168
-	number of pes  :	128
-
-Network:
-	number of input/output:	256
-	number of stages      :	4
-	number of extra stages:	1
-------------------------------------------------
-
+GRAPH,CAPACITY,EXTRA,GREEDY,SLS_GREEDY,ANNEALING,OPTIMUM
+misc/instances/grafo_10.dot,25,0,64,64,64,64
+misc/instances/grafo_10.dot,50,0,128,128,128,128
+misc/instances/grafo_10.dot,75,0,192,192,192,192

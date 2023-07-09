@@ -8,9 +8,9 @@
 #include <random>
 #include <chrono>
 
-#define MAX_TEMPERATURE 100.0
+#define MAX_TEMPERATURE 1000.0
 #define MIN_TEMPERATURE 0.0001
-#define DECAY 0.999
+#define DECAY 0.99999
 
 class Solution {
 private: 
@@ -30,7 +30,7 @@ private:
 
 public:
     // Constructor
-    Solution(const string&json_file, const string&dot_file, int copy);
+    Solution(const string&json_file, const string&dot_file, int copy, int extra);
 
     // Methods 
     int evaluate_initial_solution(const vector<int>&solution);

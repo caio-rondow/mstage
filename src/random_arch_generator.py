@@ -1,47 +1,29 @@
 import random as rand
 import json
 
-def split_tuples(lst, s2, s3):
-    result = []
+def dividir_lista(lista, k):
+    sublistas = []
 
-    j = 0
-    for _ in range(0,s2*2,2):
-        elem = (lst[j], lst[j+1])
-        result.append(tuple(elem))
-        j+=2
+    for tamanho_sublista, quantidade in k.items():
+        tamanho_sublista = int(tamanho_sublista)
+        for _ in range(quantidade):
+            sublista = lista[:tamanho_sublista]
+            sublistas.append(sublista)
+            lista = lista[tamanho_sublista:]
 
-    k = j
-    for _ in range(k, s3*3 + j, 3):
-        elem = (lst[j], lst[j+1], lst[j+2])
-        result.append(tuple(elem))
-        j+=3
-    
-    k = j
-
-    for _ in range(k, len(lst)):
-        elem = (lst[j],)
-        result.append(elem)
-        j+=1
-
-    return result
+    return sublistas
 
 def generate_architecture(filename, config, netsize, arcsize):
-
-    # get configuration
-    input  = list(config["input"].values())
-    output = list(config["output"].values())  
 
     # generate random labels
     input_label  = list(range(netsize))
     output_label = list(range(netsize))
-    # rand.shuffle(input_label)
-    # rand.shuffle(output_label)
+    rand.shuffle(input_label)
+    rand.shuffle(output_label)
     
     # divide labels into sets of wires
-    input_label  = split_tuples(input_label, input[1], input[2])
-    output_label = split_tuples(output_label, output[1], output[2])
-    # rand.shuffle(input_label)
-    # rand.shuffle(output_label)
+    input_label  = dividir_lista(input_label,  config['input'])
+    output_label = dividir_lista(output_label, config['output'])
 
     _str=""
     pe_i = 0

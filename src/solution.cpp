@@ -1,6 +1,6 @@
 #include "../include/solution.h"
 
-Solution::Solution(const string&json_file, const string&dot_file, int copy){
+Solution::Solution(const string&json_file, const string&dot_file, int copy, int extra){
 
     /* LOAD CONFIG. FILE AND GRAPH */
     DataLoader loader;
@@ -8,7 +8,7 @@ Solution::Solution(const string&json_file, const string&dot_file, int copy){
     arc = loader.read_json(json_file);
 
     /* CREATE OMEGA NETWORK */
-    Omega net(N,STAGE,EXTRA);
+    Omega net(N,STAGE,extra);
 
     for(int i=0; i<N; i++){
         for(int j=0; j<N; j++){
@@ -36,7 +36,8 @@ void Solution::info() const{
     cout << "Graph and Arquitecture:\n";
     cout << "\tnumber of nodes:\t" << G.number_of_nodes() << "\n";
     cout << "\tnumber of edges:\t" << G.number_of_edges() << "\n";
-    cout << "\tnumber of pes  :\t" << arc.size()          << "\n\n";
+    cout << "\tnumber of pes  :\t" << arc.size()          << "\n";
+    cout << "\toptimum        :\t" << get_optimum()       << "\n\n";
 
     cout << "Network:\n";
     cout << "\tnumber of input/output:\t" << N << "\n";
@@ -197,6 +198,11 @@ int Solution::greedy(vector<int>&solution, const string&search){
 
 int Solution::evaluate_initial_solution(const vector<int>&solution){
 
+    if(arc.size() < G.number_of_nodes()){
+        cerr << "least PE's them nodes.\n";
+        return 0;
+    }
+
     int cost = 0;
     clear();
     
@@ -314,6 +320,7 @@ int Solution::local_search(vector<int>&solution, int cost){
     int num_pes = arc.size();
     int current_cost = cost;
     bool is_improving=true;
+    int best_cost = current_cost;
 
     while( is_improving && current_cost!=G.number_of_edges() ){
 
@@ -329,9 +336,10 @@ int Solution::local_search(vector<int>&solution, int cost){
                     exit(1);
                 }
 
-                if(new_cost > current_cost){
+                if(new_cost > best_cost){
                     current_cost = new_cost;
                     is_improving = true;
+                    best_cost = new_cost;
                 }
                 else{
                     current_cost = _swap_two_nodes(solution, new_cost, i, j);
@@ -340,7 +348,7 @@ int Solution::local_search(vector<int>&solution, int cost){
         }
     }
 
-    return current_cost;
+    return best_cost;
 }
 
 double Solution::acceptance_probability(int deltaC, double temp) const{
@@ -374,7 +382,7 @@ int Solution::annealing(vector<int>&solution, int cost){
     int current_cost = cost;
     int node_i, node_j;
 
-    while(temp>=MIN_TEMPERATURE){
+    while(temp>=MIN_TEMPERATURE && current_cost!=G.number_of_edges()){
         
         node_i = iunif(rng);
         do{

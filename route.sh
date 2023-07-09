@@ -88,7 +88,7 @@ make -s
 # CLEAN ANSWER 
 > result.csv
 
-./build/apps/program misc/arch/default_arch128x2.json misc/merged_graph/ewf_ewf_ewf_conv3.dot 1 >> result.csv
+./build/apps/program misc/arch/default_arch256x1.json misc/graph/line.dot 1 1 25 >> result.csv
 
 # # RUN CODE HERE
 # for ((i=0; i < ${#GRAPH[@]}; i++)) do
