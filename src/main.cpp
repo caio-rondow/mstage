@@ -1,4 +1,6 @@
 #include "../include/solution.h"
+#include <chrono>
+#define MAX_ITERATIONS 100
 
 bool assert_ans(const vector<int>&ans, int n){
     for(int i=0; i<n; i++){
@@ -26,61 +28,116 @@ int main(int argc, char **argv){
     /* INIT SOLUTION */
     string json_file = argv[1];
     string dot_file  = argv[2];
-    int copy         = atoi(argv[3]);
+    int copies       = atoi(argv[3]);
     int extra        = atoi(argv[4]);
     string capacity  = argv[5];
-
-    cout << dot_file << "," << capacity << "," << extra << ",";
-    Solution solveby(json_file, dot_file, copy, extra);
-    vector<int> solution(solveby.size(),-1);
-
-    // solveby.info();
-    int optimum = solveby.get_optimum();
-
-    /* GREEDY INITIAL SOLUTION */
-    int greedy_cost = solveby.greedy(solution, "dfs");
-
-    // if(assert_ans(solution, solution.size())){
-    //     cerr << "GM - invalid answer.\n";
-    //     exit(1);
-    // }
-
-    /* LOCAL SEARCH */
-    int ls_cost = solveby.local_search(solution, greedy_cost);
     
-    // if(assert_ans(solution, solution.size())){
-    //     cerr << "LS - invalid answer.\n";
-    //     exit(1);
-    // }
+    /*
+        1. Guloso sequencial
+        2. Guloso aleatório
+        3. Guloso DFS
+        4. Guloso BFS
+        5. Busca Local no melhor
+        6. Simulated Annealing + Busca Local
+    */
 
-    solveby.clear();
+    Solution random(json_file, dot_file, copies, extra);
+    Solution greedySeq(json_file, dot_file, copies, extra);
+    Solution greedyRnd(json_file, dot_file, copies, extra);
+    Solution greedyDFS(json_file, dot_file, copies, extra);
+    Solution greedyBFS(json_file, dot_file, copies, extra);
+    Solution simulated(json_file, dot_file, copies, extra);
+    
+    int optimum = random.get_optimum();
+    int arcsize = random.size();
 
-    /* ANNEALING */
-    int sa_cost;
-    int best_sa_cost=-1;
-    vector<int> sa_solution(solveby.size(),-1);
-   
-    iota(sa_solution.begin(), sa_solution.end(), 0);
-    random_shuffle(sa_solution.begin(), sa_solution.end());
-    sa_cost = solveby.evaluate_initial_solution(sa_solution);
+    vector<int> randomSol(arcsize,-1);
+    vector<int> greedySeqSol(arcsize,-1);
+    vector<int> greedyRndSol(arcsize,-1);
+    vector<int> greedyDFSSol(arcsize,-1);
+    vector<int> greedyBFSSol(arcsize,-1);
+    vector<int> annealingSol(arcsize,-1);
 
-    for(int i=0; i<100000; i++){
+    iota(randomSol.begin(), randomSol.end(), 0);
+    random_shuffle(randomSol.begin(), randomSol.end());
+    iota(annealingSol.begin(), annealingSol.end(), 0);
 
-        sa_cost = solveby.annealing( sa_solution,  sa_cost);
 
-        // if(assert_ans(sa_solution, sa_solution.size())){
-        //     cerr << "SA - invalid answer.\n";
-        //     exit(1);
-        // }
+    /* SEQUENTIAL AND RANDOM */
+    auto start = chrono::steady_clock::now();
+    int rnd_cost = random.evaluate_initial_solution(randomSol);
+    auto end = chrono::steady_clock::now();
+    auto rnd_elapsed = chrono::duration_cast<chrono::nanoseconds>(end - start).count();
 
-        if(sa_cost > best_sa_cost){
-            best_sa_cost = sa_cost;
-            // cerr << best_sa_cost << "\n"
-        }
+    /* GREEDY */
+    start = chrono::steady_clock::now();
+    int gseq_cost = greedySeq.greedy(greedySeqSol, "seq");
+    end = chrono::steady_clock::now();
+    auto gseq_elapsed = chrono::duration_cast<chrono::nanoseconds>(end - start).count();
+    
+    start = chrono::steady_clock::now();
+    int grnd_cost = greedyRnd.greedy(greedyRndSol, "rnd");
+    end = chrono::steady_clock::now();
+    auto grnd_elapsed = chrono::duration_cast<chrono::nanoseconds>(end - start).count();
+
+    start = chrono::steady_clock::now();
+    int gdfs_cost = greedyDFS.greedy(greedyDFSSol, "dfs");
+    end = chrono::steady_clock::now();
+    auto gdfs_elapsed = chrono::duration_cast<chrono::nanoseconds>(end - start).count();
+    
+    start = chrono::steady_clock::now();    
+    int gbfs_cost = greedyBFS.greedy(greedyBFSSol, "bfs");
+    end = chrono::steady_clock::now();
+    auto gbfs_elapsed = chrono::duration_cast<chrono::nanoseconds>(end - start).count();
+    
+    /* GREEDY + LS */
+    int gls_cost=-1;
+    gls_cost = max(gls_cost, greedySeq.local_search(greedySeqSol,gseq_cost));
+    gls_cost = max(gls_cost, greedyRnd.local_search(greedyRndSol,grnd_cost));
+    gls_cost = max(gls_cost, greedyDFS.local_search(greedyDFSSol,gdfs_cost));
+
+    start = chrono::steady_clock::now();    
+    gls_cost = max(gls_cost, greedyBFS.local_search(greedyBFSSol,gbfs_cost));
+    end = chrono::steady_clock::now();
+    auto gls_elapsed = chrono::duration_cast<chrono::nanoseconds>(end - start).count();
+
+    /* ANNEALING + LS */
+    start = chrono::steady_clock::now();    
+    int best_sa_cost = -1;
+    for(int i=0; i<MAX_ITERATIONS; i++){
+        random_shuffle(annealingSol.begin(), annealingSol.end());
+        int sa_cost = simulated.evaluate_initial_solution(annealingSol);
+
+        sa_cost = simulated.annealing(annealingSol, sa_cost); // 6
+        sa_cost = simulated.local_search(annealingSol, sa_cost); 
+        
+        best_sa_cost = max(sa_cost, best_sa_cost);
+        if(best_sa_cost == optimum)
+            break;
     }
+    end = chrono::steady_clock::now();
+    auto sa_elapsed = chrono::duration_cast<chrono::nanoseconds>(end - start).count();
 
-    /* RESULTS */ 
-    cout << greedy_cost << "," << ls_cost << "," << best_sa_cost << "," << optimum << "\n";
+    cout << dot_file     << ",";
+    cout << capacity     << ",";
+    cout << extra        << ",";
 
+    cout << rnd_elapsed  << ",";
+    cout << gseq_elapsed << ",";
+    cout << grnd_elapsed << ",";
+    cout << gdfs_elapsed << ",";
+    cout << gbfs_elapsed << ",";
+    cout << gls_elapsed  << ",";
+    cout << sa_elapsed   << ",";
+
+    // cout << rnd_cost     << ",";
+    // cout << gseq_cost    << ","; 
+    // cout << grnd_cost    << ",";
+    // cout << gdfs_cost    << ",";
+    // cout << gbfs_cost    << ",";
+    // cout << gls_cost     << ",";
+    // cout << best_sa_cost << ",";
+    cout << optimum      << "\n";
+        
     return 0;
 }

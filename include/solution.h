@@ -8,7 +8,7 @@
 #include <random>
 #include <chrono>
 
-#define MAX_TEMPERATURE 1000.0
+#define MAX_TEMPERATURE 0.001
 #define MIN_TEMPERATURE 0.0001
 #define DECAY 0.99999
 
@@ -17,8 +17,6 @@ private:
     Omega net;
     Digraph G;
     Architecture arc;
-
-    int visited[N][N];
 
     int _swap_two_nodes(vector<int>&solution, int cost, int node_i, int node_j);
     int _remove_node_from_pe(const vector<int>&solution, int node, int pe);
@@ -29,6 +27,7 @@ private:
     double acceptance_probability(int deltaC, double temp) const;
 
 public:
+    vector<vector<int>>visited;
     // Constructor
     Solution(const string&json_file, const string&dot_file, int copy, int extra);
 

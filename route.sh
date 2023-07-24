@@ -1,96 +1,84 @@
-arg=$1      # simulate a single graph
-str="all"   # simulate all graphs
+INSTANCES=14
 
-# .json ARCHS
-ARCH=(
-    # default_arch128x2.json  # Cplx8
-    # default_arch128x2.json  # FilterRGB
-    # default_arch128x2.json  # Fir16
-    # default_arch128x2.json  # arf
-    # default_arch128x2.json  # conv3
-    # default_arch128x2.json  # cosine1
-    # default_arch128x2.json  # cosine2
-    # default_arch128x2.json  # ewf
-    # default_arch128x2.json  # feedback_points
-    # default_arch128x2.json  # fir
-    # default_arch128x2.json  # fir1
-    # default_arch128x2.json  # fir2
-    # default_arch128x2.json  # h2v2_smooth
-    # default_arch128x2.json  # horner_bezier_surf
-    default_arch128x2.json  # interpolate_aux
-    # jpeg_fdct_islow_config.json  # jpeg_fdct_islow
-    # jpeg_idct_ifast_config.json  # jpeg_idct_ifast
-    # k4n4op_config.json      # k4n4op
-    # default_arch128x2.json  # mac
-    # default_arch128x2.json  # motion_vectors
-    # default_arch128x2.json  # mults1
-    # default_arch128x2.json  # simple
+GRAPH=(
+'misc/graphs/Fir16.dot'
+'misc/graphs/mults1.dot'
+'misc/graphs/10horner_bezier_surf_1arf.dot'
+'misc/graphs/simple.dot'
+'misc/graphs/conv3.dot'
+'misc/graphs/ewf.dot'
+'misc/graphs/mac.dot'
+'misc/graphs/Fir16_5arf.dot'
+'misc/graphs/2ewf_2conv3_4horner_bezier_surf.dot'
+'misc/graphs/sintetic.dot'
+'misc/graphs/7sintetic_1mults1.dot'
+'misc/graphs/5sintetic_1Fir16.dot'
+'misc/graphs/sintetic.dot'
+'misc/graphs/line.dot'
 )
 
-# .dot GRAPHS
-if [[ "$#" == 0 || "$arg" == "$str" ]]; then
-    GRAPH=(
-    # Cplx8.dot
-    # FilterRGB.dot
-    # Fir16.dot
-    # arf.dot
-    # conv3.dot
-    # cosine1.dot
-    # cosine2.dot
-    # ewf.dot
-    # feedback_points.dot
-    # fir.dot
-    # fir1.dot
-    # fir2.dot
-    # h2v2_smooth.dot
-    # horner_bezier_surf.dot
-    interpolate_aux.dot
-    # jpeg_fdct_islow.dot
-    # jpeg_idct_ifast.dot
-    # k4n4op.dot
-    # mac.dot
-    # motion_vectors.dot
-    # mults1.dot
-    # simple.dot
-    )
-elif [ -e misc/graph/"$arg.dot" ]; then
-    GRAPH=("$arg.dot")
-fi
+ARCH=(
+'misc/archs_seq/arch_ex1_50.json'
+'misc/archs_seq/arch_ex2_50.json'
+'misc/archs_seq/arch_ex3_75.json'
+'misc/archs_seq/arch_ex4_75.json'
+'misc/archs_seq/arch_ex5_75.json'
+'misc/archs_seq/arch_ex6_75.json'
+'misc/archs_seq/arch_ex7_85.json'
+'misc/archs_seq/arch_ex8_85.json'
+'misc/archs_seq/arch_ex9_85.json'
+'misc/archs_seq/arch_ex10_90.json'
+'misc/archs_seq/arch_ex11_90.json'
+'misc/archs_seq/arch_ex12_90.json'
+'misc/archs_seq/arch_ex13_100.json'
+'misc/archs_seq/arch_ex14_100.json'
+)
 
-MAX_IN_NET=(
-    # 2 # Cplx8
-    # 2 # FilterRGB
-    # 2 # Fir16
-    # 4 # arf
-    # 5 # conv3
-    # 1 # cosine1
-    # 1 # cosine2
-    # 3 # ewf
-    # 2 # feedback_points
-    # 2 # fir
-    # 2 # fir1
-    # 3 # fir2
-    # 2 # h2v2_smooth
-    # 7 # horner_bezier_surf
-    1 # interpolate_aux
-    # 1 # jpeg_fdct_islow
-    # 1 # jpeg_idct_ifast
-    # 2 # k4n4op
-    # 11 # mac
-    # 4 # motion_vectors
-    # 6 # mults1
-    # 10 # simple
+COPY=(
+2
+6
+1
+14
+7
+4
+16
+1
+1
+7
+1
+1
+8
+1
+)
+
+CAPACITY=(
+'49.21%'
+'53.90%'
+'74.21%'
+'76.56%'
+'73.82%'
+'73.43%'
+'81.25%'
+'83.20%'
+'82.81%'
+'87.50%'
+'92.96%'
+'87.10%'
+'100%'
+'99.60%'
 )
 
 # COMPILE CODE 
 make -s
 
 # CLEAN ANSWER 
-> result.csv
+echo "GRAFO,CAPACIDADE,EXTRA,ALEATORIO,GULOSO_SEQ,GULOSO_RND,GULOSO_DFS,GULOSO_BFS,GULOSO_LS,ANNEALING,OPTIMUM" > result.csv
 
-./build/apps/program misc/arch/default_arch256x1.json misc/graph/line.dot 1 1 25 >> result.csv
+# RUN CODE
+for ((i=0; i<$INSTANCES; i++)) do
+    for EXTRA in {0..4}; do
 
-# # RUN CODE HERE
-# for ((i=0; i < ${#GRAPH[@]}; i++)) do
-#     ./build/apps/program misc/arch/${ARCH[i]} misc/graph/${GRAPH[i]} ${MAX_IN_NET[i]} >> result.csv
-# done
+        ./build/apps/program ${ARCH[i]} ${GRAPH[i]} ${COPY[i]} $EXTRA ${CAPACITY[i]} >> result.csv
+
+    done
+done

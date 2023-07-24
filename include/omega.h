@@ -12,7 +12,7 @@
 #define FAIL -1
 #define N 256
 #define STAGE 4
-#define EXTRA 1
+#define EXTRA 0
 
 using namespace std;
 
@@ -23,7 +23,6 @@ private:
     int **_switch;                          // shows route in switch
     int **_route_matrix;                    // shows if a wire is in use
     int _netsize, _st, _ex, _exsize, _mask; // parametros da rede
-    
 
     // Aux. Functions
     void create();
@@ -37,6 +36,8 @@ public:
     // Constructor/Destructor
     Omega(int n=256, int st=4, int ex=1, int radix=4);
     ~Omega();
+    Omega(const Omega&);
+    Omega &operator=(const Omega&);
 
     // Methods
     int route(int input, int output);
@@ -44,7 +45,11 @@ public:
     void display() const;
     void display_switch() const;
     void clear();
-    vector<vector<int>> get_net();
+    void copy(vector<vector<int>>&net, vector<vector<int>>&config) const;
+    void set(vector<vector<int>>&net, vector<vector<int>>&config);
+    int stages() const;
+
+    int teste_route(int input, int extra, int output);
 };
 
 #endif

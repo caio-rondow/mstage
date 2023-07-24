@@ -1,0 +1,1283 @@
+{
+	"num_pes":256,
+
+	"PE0":{
+		"input" :[75],
+		"output":[208]
+	},
+
+	"PE1":{
+		"input" :[179],
+		"output":[251]
+	},
+
+	"PE2":{
+		"input" :[132],
+		"output":[201]
+	},
+
+	"PE3":{
+		"input" :[249],
+		"output":[47]
+	},
+
+	"PE4":{
+		"input" :[2],
+		"output":[187]
+	},
+
+	"PE5":{
+		"input" :[91],
+		"output":[150]
+	},
+
+	"PE6":{
+		"input" :[185],
+		"output":[55]
+	},
+
+	"PE7":{
+		"input" :[90],
+		"output":[229]
+	},
+
+	"PE8":{
+		"input" :[108],
+		"output":[168]
+	},
+
+	"PE9":{
+		"input" :[171],
+		"output":[26]
+	},
+
+	"PE10":{
+		"input" :[5],
+		"output":[63]
+	},
+
+	"PE11":{
+		"input" :[80],
+		"output":[42]
+	},
+
+	"PE12":{
+		"input" :[193],
+		"output":[69]
+	},
+
+	"PE13":{
+		"input" :[190],
+		"output":[186]
+	},
+
+	"PE14":{
+		"input" :[17],
+		"output":[213]
+	},
+
+	"PE15":{
+		"input" :[166],
+		"output":[93]
+	},
+
+	"PE16":{
+		"input" :[131],
+		"output":[207]
+	},
+
+	"PE17":{
+		"input" :[99],
+		"output":[119]
+	},
+
+	"PE18":{
+		"input" :[77],
+		"output":[92]
+	},
+
+	"PE19":{
+		"input" :[170],
+		"output":[249]
+	},
+
+	"PE20":{
+		"input" :[100],
+		"output":[235]
+	},
+
+	"PE21":{
+		"input" :[109],
+		"output":[218]
+	},
+
+	"PE22":{
+		"input" :[223],
+		"output":[112]
+	},
+
+	"PE23":{
+		"input" :[10],
+		"output":[95]
+	},
+
+	"PE24":{
+		"input" :[81],
+		"output":[129]
+	},
+
+	"PE25":{
+		"input" :[140],
+		"output":[118]
+	},
+
+	"PE26":{
+		"input" :[203],
+		"output":[32]
+	},
+
+	"PE27":{
+		"input" :[42],
+		"output":[79]
+	},
+
+	"PE28":{
+		"input" :[169],
+		"output":[230]
+	},
+
+	"PE29":{
+		"input" :[30],
+		"output":[241]
+	},
+
+	"PE30":{
+		"input" :[196],
+		"output":[7]
+	},
+
+	"PE31":{
+		"input" :[38],
+		"output":[163]
+	},
+
+	"PE32":{
+		"input" :[37],
+		"output":[2]
+	},
+
+	"PE33":{
+		"input" :[0],
+		"output":[222]
+	},
+
+	"PE34":{
+		"input" :[21],
+		"output":[224]
+	},
+
+	"PE35":{
+		"input" :[143],
+		"output":[116]
+	},
+
+	"PE36":{
+		"input" :[78],
+		"output":[44]
+	},
+
+	"PE37":{
+		"input" :[41],
+		"output":[1]
+	},
+
+	"PE38":{
+		"input" :[51],
+		"output":[190]
+	},
+
+	"PE39":{
+		"input" :[136],
+		"output":[146]
+	},
+
+	"PE40":{
+		"input" :[28],
+		"output":[50]
+	},
+
+	"PE41":{
+		"input" :[192],
+		"output":[57]
+	},
+
+	"PE42":{
+		"input" :[71],
+		"output":[34]
+	},
+
+	"PE43":{
+		"input" :[54],
+		"output":[108]
+	},
+
+	"PE44":{
+		"input" :[125],
+		"output":[205]
+	},
+
+	"PE45":{
+		"input" :[89],
+		"output":[145]
+	},
+
+	"PE46":{
+		"input" :[85],
+		"output":[239]
+	},
+
+	"PE47":{
+		"input" :[221],
+		"output":[40]
+	},
+
+	"PE48":{
+		"input" :[149],
+		"output":[236]
+	},
+
+	"PE49":{
+		"input" :[60],
+		"output":[21]
+	},
+
+	"PE50":{
+		"input" :[139],
+		"output":[28]
+	},
+
+	"PE51":{
+		"input" :[239],
+		"output":[45]
+	},
+
+	"PE52":{
+		"input" :[82],
+		"output":[153]
+	},
+
+	"PE53":{
+		"input" :[214],
+		"output":[193]
+	},
+
+	"PE54":{
+		"input" :[194],
+		"output":[65]
+	},
+
+	"PE55":{
+		"input" :[23],
+		"output":[136]
+	},
+
+	"PE56":{
+		"input" :[14],
+		"output":[111]
+	},
+
+	"PE57":{
+		"input" :[101],
+		"output":[5]
+	},
+
+	"PE58":{
+		"input" :[73],
+		"output":[71]
+	},
+
+	"PE59":{
+		"input" :[167],
+		"output":[232]
+	},
+
+	"PE60":{
+		"input" :[245],
+		"output":[132]
+	},
+
+	"PE61":{
+		"input" :[189],
+		"output":[72]
+	},
+
+	"PE62":{
+		"input" :[240],
+		"output":[253]
+	},
+
+	"PE63":{
+		"input" :[104],
+		"output":[138]
+	},
+
+	"PE64":{
+		"input" :[47],
+		"output":[171]
+	},
+
+	"PE65":{
+		"input" :[96],
+		"output":[154]
+	},
+
+	"PE66":{
+		"input" :[146],
+		"output":[117]
+	},
+
+	"PE67":{
+		"input" :[39],
+		"output":[169]
+	},
+
+	"PE68":{
+		"input" :[66],
+		"output":[39]
+	},
+
+	"PE69":{
+		"input" :[93],
+		"output":[174]
+	},
+
+	"PE70":{
+		"input" :[151],
+		"output":[226]
+	},
+
+	"PE71":{
+		"input" :[148],
+		"output":[98]
+	},
+
+	"PE72":{
+		"input" :[114],
+		"output":[99]
+	},
+
+	"PE73":{
+		"input" :[216],
+		"output":[46]
+	},
+
+	"PE74":{
+		"input" :[88],
+		"output":[74]
+	},
+
+	"PE75":{
+		"input" :[243],
+		"output":[59]
+	},
+
+	"PE76":{
+		"input" :[50],
+		"output":[200]
+	},
+
+	"PE77":{
+		"input" :[182],
+		"output":[147]
+	},
+
+	"PE78":{
+		"input" :[241],
+		"output":[123]
+	},
+
+	"PE79":{
+		"input" :[138],
+		"output":[248]
+	},
+
+	"PE80":{
+		"input" :[19],
+		"output":[214]
+	},
+
+	"PE81":{
+		"input" :[130],
+		"output":[155]
+	},
+
+	"PE82":{
+		"input" :[156],
+		"output":[16]
+	},
+
+	"PE83":{
+		"input" :[118],
+		"output":[122]
+	},
+
+	"PE84":{
+		"input" :[253],
+		"output":[22]
+	},
+
+	"PE85":{
+		"input" :[231],
+		"output":[255]
+	},
+
+	"PE86":{
+		"input" :[180],
+		"output":[97]
+	},
+
+	"PE87":{
+		"input" :[94],
+		"output":[244]
+	},
+
+	"PE88":{
+		"input" :[103],
+		"output":[87]
+	},
+
+	"PE89":{
+		"input" :[13],
+		"output":[17]
+	},
+
+	"PE90":{
+		"input" :[11],
+		"output":[192]
+	},
+
+	"PE91":{
+		"input" :[95],
+		"output":[184]
+	},
+
+	"PE92":{
+		"input" :[3],
+		"output":[85]
+	},
+
+	"PE93":{
+		"input" :[69],
+		"output":[198]
+	},
+
+	"PE94":{
+		"input" :[44],
+		"output":[148]
+	},
+
+	"PE95":{
+		"input" :[198],
+		"output":[243]
+	},
+
+	"PE96":{
+		"input" :[246],
+		"output":[162]
+	},
+
+	"PE97":{
+		"input" :[20],
+		"output":[10]
+	},
+
+	"PE98":{
+		"input" :[201],
+		"output":[202]
+	},
+
+	"PE99":{
+		"input" :[235],
+		"output":[60]
+	},
+
+	"PE100":{
+		"input" :[205],
+		"output":[120]
+	},
+
+	"PE101":{
+		"input" :[55],
+		"output":[217]
+	},
+
+	"PE102":{
+		"input" :[195],
+		"output":[177]
+	},
+
+	"PE103":{
+		"input" :[242],
+		"output":[66]
+	},
+
+	"PE104":{
+		"input" :[58],
+		"output":[137]
+	},
+
+	"PE105":{
+		"input" :[133],
+		"output":[126]
+	},
+
+	"PE106":{
+		"input" :[238],
+		"output":[4]
+	},
+
+	"PE107":{
+		"input" :[213],
+		"output":[8]
+	},
+
+	"PE108":{
+		"input" :[225],
+		"output":[70]
+	},
+
+	"PE109":{
+		"input" :[117],
+		"output":[134]
+	},
+
+	"PE110":{
+		"input" :[197],
+		"output":[211]
+	},
+
+	"PE111":{
+		"input" :[186],
+		"output":[166]
+	},
+
+	"PE112":{
+		"input" :[218],
+		"output":[81]
+	},
+
+	"PE113":{
+		"input" :[207],
+		"output":[165]
+	},
+
+	"PE114":{
+		"input" :[147],
+		"output":[167]
+	},
+
+	"PE115":{
+		"input" :[176],
+		"output":[100]
+	},
+
+	"PE116":{
+		"input" :[64],
+		"output":[51]
+	},
+
+	"PE117":{
+		"input" :[9],
+		"output":[3]
+	},
+
+	"PE118":{
+		"input" :[164],
+		"output":[83]
+	},
+
+	"PE119":{
+		"input" :[184],
+		"output":[245]
+	},
+
+	"PE120":{
+		"input" :[65],
+		"output":[18]
+	},
+
+	"PE121":{
+		"input" :[248],
+		"output":[103]
+	},
+
+	"PE122":{
+		"input" :[45],
+		"output":[178]
+	},
+
+	"PE123":{
+		"input" :[247],
+		"output":[33]
+	},
+
+	"PE124":{
+		"input" :[31],
+		"output":[15]
+	},
+
+	"PE125":{
+		"input" :[141],
+		"output":[80]
+	},
+
+	"PE126":{
+		"input" :[162],
+		"output":[215]
+	},
+
+	"PE127":{
+		"input" :[134],
+		"output":[197]
+	},
+
+	"PE128":{
+		"input" :[222],
+		"output":[233]
+	},
+
+	"PE129":{
+		"input" :[210],
+		"output":[242]
+	},
+
+	"PE130":{
+		"input" :[126],
+		"output":[104]
+	},
+
+	"PE131":{
+		"input" :[70],
+		"output":[179]
+	},
+
+	"PE132":{
+		"input" :[160],
+		"output":[238]
+	},
+
+	"PE133":{
+		"input" :[121],
+		"output":[19]
+	},
+
+	"PE134":{
+		"input" :[92],
+		"output":[191]
+	},
+
+	"PE135":{
+		"input" :[22],
+		"output":[221]
+	},
+
+	"PE136":{
+		"input" :[79],
+		"output":[91]
+	},
+
+	"PE137":{
+		"input" :[173],
+		"output":[110]
+	},
+
+	"PE138":{
+		"input" :[165],
+		"output":[225]
+	},
+
+	"PE139":{
+		"input" :[199],
+		"output":[194]
+	},
+
+	"PE140":{
+		"input" :[155],
+		"output":[223]
+	},
+
+	"PE141":{
+		"input" :[34],
+		"output":[181]
+	},
+
+	"PE142":{
+		"input" :[116],
+		"output":[20]
+	},
+
+	"PE143":{
+		"input" :[46],
+		"output":[35]
+	},
+
+	"PE144":{
+		"input" :[200],
+		"output":[67]
+	},
+
+	"PE145":{
+		"input" :[144],
+		"output":[195]
+	},
+
+	"PE146":{
+		"input" :[68],
+		"output":[96]
+	},
+
+	"PE147":{
+		"input" :[232],
+		"output":[240]
+	},
+
+	"PE148":{
+		"input" :[110],
+		"output":[234]
+	},
+
+	"PE149":{
+		"input" :[206],
+		"output":[157]
+	},
+
+	"PE150":{
+		"input" :[159],
+		"output":[176]
+	},
+
+	"PE151":{
+		"input" :[188],
+		"output":[228]
+	},
+
+	"PE152":{
+		"input" :[63],
+		"output":[237]
+	},
+
+	"PE153":{
+		"input" :[123],
+		"output":[144]
+	},
+
+	"PE154":{
+		"input" :[168],
+		"output":[156]
+	},
+
+	"PE155":{
+		"input" :[72],
+		"output":[106]
+	},
+
+	"PE156":{
+		"input" :[86],
+		"output":[159]
+	},
+
+	"PE157":{
+		"input" :[4],
+		"output":[115]
+	},
+
+	"PE158":{
+		"input" :[59],
+		"output":[61]
+	},
+
+	"PE159":{
+		"input" :[226],
+		"output":[170]
+	},
+
+	"PE160":{
+		"input" :[145],
+		"output":[173]
+	},
+
+	"PE161":{
+		"input" :[177],
+		"output":[101]
+	},
+
+	"PE162":{
+		"input" :[251],
+		"output":[27]
+	},
+
+	"PE163":{
+		"input" :[112],
+		"output":[13]
+	},
+
+	"PE164":{
+		"input" :[61],
+		"output":[64]
+	},
+
+	"PE165":{
+		"input" :[48],
+		"output":[58]
+	},
+
+	"PE166":{
+		"input" :[229],
+		"output":[88]
+	},
+
+	"PE167":{
+		"input" :[211],
+		"output":[209]
+	},
+
+	"PE168":{
+		"input" :[106],
+		"output":[14]
+	},
+
+	"PE169":{
+		"input" :[209],
+		"output":[210]
+	},
+
+	"PE170":{
+		"input" :[137],
+		"output":[48]
+	},
+
+	"PE171":{
+		"input" :[113],
+		"output":[56]
+	},
+
+	"PE172":{
+		"input" :[49],
+		"output":[139]
+	},
+
+	"PE173":{
+		"input" :[236],
+		"output":[37]
+	},
+
+	"PE174":{
+		"input" :[26],
+		"output":[53]
+	},
+
+	"PE175":{
+		"input" :[224],
+		"output":[105]
+	},
+
+	"PE176":{
+		"input" :[97],
+		"output":[86]
+	},
+
+	"PE177":{
+		"input" :[127],
+		"output":[73]
+	},
+
+	"PE178":{
+		"input" :[25],
+		"output":[41]
+	},
+
+	"PE179":{
+		"input" :[161],
+		"output":[164]
+	},
+
+	"PE180":{
+		"input" :[219],
+		"output":[128]
+	},
+
+	"PE181":{
+		"input" :[29],
+		"output":[135]
+	},
+
+	"PE182":{
+		"input" :[27],
+		"output":[220]
+	},
+
+	"PE183":{
+		"input" :[228],
+		"output":[152]
+	},
+
+	"PE184":{
+		"input" :[98],
+		"output":[49]
+	},
+
+	"PE185":{
+		"input" :[105],
+		"output":[43]
+	},
+
+	"PE186":{
+		"input" :[175],
+		"output":[84]
+	},
+
+	"PE187":{
+		"input" :[74],
+		"output":[204]
+	},
+
+	"PE188":{
+		"input" :[158],
+		"output":[6]
+	},
+
+	"PE189":{
+		"input" :[129],
+		"output":[89]
+	},
+
+	"PE190":{
+		"input" :[237],
+		"output":[0]
+	},
+
+	"PE191":{
+		"input" :[111],
+		"output":[62]
+	},
+
+	"PE192":{
+		"input" :[220],
+		"output":[142]
+	},
+
+	"PE193":{
+		"input" :[181],
+		"output":[36]
+	},
+
+	"PE194":{
+		"input" :[208],
+		"output":[109]
+	},
+
+	"PE195":{
+		"input" :[178],
+		"output":[127]
+	},
+
+	"PE196":{
+		"input" :[204],
+		"output":[158]
+	},
+
+	"PE197":{
+		"input" :[76],
+		"output":[143]
+	},
+
+	"PE198":{
+		"input" :[135],
+		"output":[23]
+	},
+
+	"PE199":{
+		"input" :[53],
+		"output":[140]
+	},
+
+	"PE200":{
+		"input" :[18],
+		"output":[185]
+	},
+
+	"PE201":{
+		"input" :[153],
+		"output":[196]
+	},
+
+	"PE202":{
+		"input" :[36],
+		"output":[141]
+	},
+
+	"PE203":{
+		"input" :[83],
+		"output":[76]
+	},
+
+	"PE204":{
+		"input" :[84],
+		"output":[219]
+	},
+
+	"PE205":{
+		"input" :[234],
+		"output":[254]
+	},
+
+	"PE206":{
+		"input" :[163],
+		"output":[151]
+	},
+
+	"PE207":{
+		"input" :[107],
+		"output":[206]
+	},
+
+	"PE208":{
+		"input" :[7],
+		"output":[121]
+	},
+
+	"PE209":{
+		"input" :[57],
+		"output":[29]
+	},
+
+	"PE210":{
+		"input" :[33],
+		"output":[52]
+	},
+
+	"PE211":{
+		"input" :[40],
+		"output":[133]
+	},
+
+	"PE212":{
+		"input" :[8],
+		"output":[9]
+	},
+
+	"PE213":{
+		"input" :[215],
+		"output":[113]
+	},
+
+	"PE214":{
+		"input" :[6],
+		"output":[199]
+	},
+
+	"PE215":{
+		"input" :[227],
+		"output":[78]
+	},
+
+	"PE216":{
+		"input" :[62],
+		"output":[188]
+	},
+
+	"PE217":{
+		"input" :[119],
+		"output":[11]
+	},
+
+	"PE218":{
+		"input" :[24],
+		"output":[54]
+	},
+
+	"PE219":{
+		"input" :[142],
+		"output":[231]
+	},
+
+	"PE220":{
+		"input" :[122],
+		"output":[175]
+	},
+
+	"PE221":{
+		"input" :[244],
+		"output":[130]
+	},
+
+	"PE222":{
+		"input" :[52],
+		"output":[124]
+	},
+
+	"PE223":{
+		"input" :[67],
+		"output":[131]
+	},
+
+	"PE224":{
+		"input" :[43],
+		"output":[38]
+	},
+
+	"PE225":{
+		"input" :[217],
+		"output":[227]
+	},
+
+	"PE226":{
+		"input" :[152],
+		"output":[180]
+	},
+
+	"PE227":{
+		"input" :[187],
+		"output":[189]
+	},
+
+	"PE228":{
+		"input" :[87],
+		"output":[75]
+	},
+
+	"PE229":{
+		"input" :[150],
+		"output":[160]
+	},
+
+	"PE230":{
+		"input" :[230],
+		"output":[114]
+	},
+
+	"PE231":{
+		"input" :[233],
+		"output":[161]
+	},
+
+	"PE232":{
+		"input" :[102],
+		"output":[246]
+	},
+
+	"PE233":{
+		"input" :[15],
+		"output":[203]
+	},
+
+	"PE234":{
+		"input" :[252],
+		"output":[216]
+	},
+
+	"PE235":{
+		"input" :[56],
+		"output":[252]
+	},
+
+	"PE236":{
+		"input" :[172],
+		"output":[24]
+	},
+
+	"PE237":{
+		"input" :[128],
+		"output":[183]
+	},
+
+	"PE238":{
+		"input" :[212],
+		"output":[250]
+	},
+
+	"PE239":{
+		"input" :[120],
+		"output":[77]
+	},
+
+	"PE240":{
+		"input" :[255],
+		"output":[172]
+	},
+
+	"PE241":{
+		"input" :[16],
+		"output":[30]
+	},
+
+	"PE242":{
+		"input" :[202],
+		"output":[125]
+	},
+
+	"PE243":{
+		"input" :[174],
+		"output":[68]
+	},
+
+	"PE244":{
+		"input" :[250],
+		"output":[107]
+	},
+
+	"PE245":{
+		"input" :[183],
+		"output":[12]
+	},
+
+	"PE246":{
+		"input" :[115],
+		"output":[149]
+	},
+
+	"PE247":{
+		"input" :[157],
+		"output":[31]
+	},
+
+	"PE248":{
+		"input" :[1],
+		"output":[25]
+	},
+
+	"PE249":{
+		"input" :[32],
+		"output":[212]
+	},
+
+	"PE250":{
+		"input" :[12],
+		"output":[182]
+	},
+
+	"PE251":{
+		"input" :[154],
+		"output":[94]
+	},
+
+	"PE252":{
+		"input" :[254],
+		"output":[82]
+	},
+
+	"PE253":{
+		"input" :[124],
+		"output":[102]
+	},
+
+	"PE254":{
+		"input" :[191],
+		"output":[247]
+	},
+
+	"PE255":{
+		"input" :[35],
+		"output":[90]
+	}
+}

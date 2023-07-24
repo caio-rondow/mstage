@@ -9,6 +9,10 @@ Omega::Omega(int netsize, int st, int ex, int radix){
     _exsize  = pow(radix,ex);
     _mask    = netsize-1;
 
+    // cerr << this << "\n";
+    // cerr << "extra: " << _ex << "\n";
+    // cerr << "exsize: " << _exsize << "\n";
+
     _switch = new int*[netsize];
     _route_matrix   = new int*[netsize];
 
@@ -18,6 +22,37 @@ Omega::Omega(int netsize, int st, int ex, int radix){
     }
 
     clear();
+}
+
+Omega::Omega(const Omega&other){
+    create();
+    *this = other;
+}
+
+Omega &Omega::operator=(const Omega &other){
+    if(this==&other) return *this;
+    destroy();
+    _netsize = other._netsize;
+    _st = other._st;
+    _ex = other._ex;
+    _exsize = other._exsize;
+    _mask = other._mask;
+
+    _switch = new int*[_netsize];
+    _route_matrix   = new int*[_netsize];
+
+    for(int i=0; i<_netsize; i++){
+        _switch[i] = new int[_st+_ex];
+        _route_matrix[i]   = new int[_st+_ex];
+    }
+
+    for(int i=0; i<_netsize; i++){
+        for(int j=0; j<_st+_ex; j++){
+            _switch[i][j] = other._switch[i][j];
+            _route_matrix[i][j] = other._route_matrix[i][j]; 
+        }
+    }
+    return *this;
 }
 
 Omega::~Omega(){ 
@@ -125,6 +160,44 @@ int Omega::route(int input, int output){
     return FAIL;
 }
 
+
+int Omega::teste_route(int input, int extra, int output){
+
+    // supondo que encontrei um caminho
+    bool res=true;
+
+    // concatena palavra: entrada+extra+saida
+    int word = concat(input, extra, output);
+
+    // para todos os estagios...
+    for(int j=0; j<_st+_ex; j++){
+        
+        // pega o valor da janela atual
+        int i = window(word, j);
+
+        // se o caminho esta ocupado
+        // senão, permute um bit extra
+        if(_route_matrix[i][j]) 
+            res = res && ( _switch[i][j] == switch_code(word,j) ); 
+    }
+
+    // se encontrou um caminho...
+    if(res){
+        for(int j=0; j<_st+_ex; j++){
+
+            int i = window(word,j);
+
+            // marca o caminho que fez
+            _route_matrix[i][j]++;
+            _switch[i][j] = switch_code(word,j);
+        } 
+
+        return word;
+    }
+    
+    return FAIL;
+}
+
 void Omega::clear(){ // reseta a rede
     for(int i=0; i<_netsize; i++){
         for(int j=0; j<_st+_ex; j++){
@@ -164,12 +237,24 @@ void Omega::display_switch() const{
 
 }
 
-vector<vector<int>> Omega::get_net(){
-    vector<vector<int>> copy_net(_netsize, vector<int>(_st+_ex, 0));
+void Omega::copy(vector<vector<int>>&net, vector<vector<int>>&config) const{
     for(int i=0; i<_netsize; i++){
         for(int j=0; j<_st+_ex; j++){
-            copy_net[i][j] = _route_matrix[i][j];
+            net[i][j]    = _route_matrix[i][j];
+            config[i][j] = _switch[i][j]; 
         }
     }
-    return copy_net;
+}
+
+void Omega::set(vector<vector<int>>&net, vector<vector<int>>&config){
+    for(int i=0; i<_netsize; i++){
+        for(int j=0; j<_st+_ex; j++){
+            _route_matrix[i][j] = net[i][j];
+            _switch[i][j] = config[i][j]; 
+        }
+    }
+}
+
+int Omega::stages() const{
+    return _st+_ex;
 }

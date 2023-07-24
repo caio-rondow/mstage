@@ -8,13 +8,8 @@ Solution::Solution(const string&json_file, const string&dot_file, int copy, int 
     arc = loader.read_json(json_file);
 
     /* CREATE OMEGA NETWORK */
-    Omega net(N,STAGE,extra);
-
-    for(int i=0; i<N; i++){
-        for(int j=0; j<N; j++){
-            visited[i][j] = -1;
-        }
-    }
+    net = Omega(N,STAGE,extra);
+    visited = vector<vector<int>>(N, vector<int>(N, -1));
 }
 
 void Solution::clear(){
@@ -64,11 +59,16 @@ int Solution::greedy(vector<int>&solution, const string&search){
         edges = G.bfs_edges();
     } else if(search=="dfs"){
         edges = G.dfs_edges();
+    } else if(search=="seq"){
+        edges = G.edges();
     } else{
         edges = G.edges();
+        random_shuffle(edges.begin(),edges.end());
     }
 
-    for(auto &e:G.edges()){
+    int current_cost=0;
+    int fails=0;
+    for(auto &e:edges){
 
         int node_i = e.first;
         int node_j = e.second;
@@ -87,13 +87,15 @@ int Solution::greedy(vector<int>&solution, const string&search){
 
                 for(int pei=0; pei<num_pes; pei++){
                     if(pe2node[pei]==-1 && _route(pei,pei) != FAIL){
+                        current_cost++;
                         solution[node_i] = pei;
                         pe2node[pei] = node_i;
                     }
                 }
 
             } else{
-                _route(solution[node_i], solution[node_i]);
+                if(_route(solution[node_i], solution[node_i]) != FAIL)
+                    current_cost++;
             }
 
         } else{
@@ -110,7 +112,7 @@ int Solution::greedy(vector<int>&solution, const string&search){
                         for(int pej=0; pej<num_pes; pej++){
 
                             if( pei != pej && pe2node[pej]==-1 && _route(pei,pej) != FAIL){
-
+                                current_cost++;
                                 solution[node_i] = pei;
                                 solution[node_j] = pej;
 
@@ -134,7 +136,7 @@ int Solution::greedy(vector<int>&solution, const string&search){
                     for(int pej=0; pej<num_pes; pej++){
                         
                         if(pe2node[pej]==-1 && _route(pei,pej) != FAIL){
-
+                            current_cost++;
                             solution[node_j] = pej;
                             pe2node[pej] = node_j;
                             break;
@@ -150,7 +152,7 @@ int Solution::greedy(vector<int>&solution, const string&search){
                     for(int pei=0; pei<num_pes; pei++){
 
                         if(pe2node[pei]==-1 && _route(pei,pej) != FAIL){
-                            
+                            current_cost++;
                             solution[node_i] = pei;
                             pe2node[pei] = node_i;
                             break;
@@ -163,11 +165,20 @@ int Solution::greedy(vector<int>&solution, const string&search){
 
                     pei = solution[node_i];
                     pej = solution[node_j];
-                    _route(pei,pej);
+                    if(_route(pei,pej) != FAIL){
+                        current_cost++;
+                    } else{
+                        fails++;
+                    }
 
                 break;
             }
         }
+
+        if(solution[node_i]==-1 || solution[node_j]==-1){
+            fails++;
+        }
+
     }
 
     // criando solução completa
@@ -191,7 +202,9 @@ int Solution::greedy(vector<int>&solution, const string&search){
         }
     }
 
-    int current_cost = evaluate_initial_solution(solution);
+    current_cost = evaluate_initial_solution(solution);
+
+    // cerr << fails << " " << current_cost2 << " " << current_cost << "\n";
 
     return current_cost;
 }
@@ -322,7 +335,13 @@ int Solution::local_search(vector<int>&solution, int cost){
     bool is_improving=true;
     int best_cost = current_cost;
 
-    while( is_improving && current_cost!=G.number_of_edges() ){
+    vector<vector<int>> visited_checkpoint=visited;
+    vector<vector<int>> copy_net(N, vector<int>(net.stages()));
+    vector<vector<int>> copy_config(N, vector<int>(net.stages()));
+    vector<int> node2pe=solution;
+    net.copy(copy_net, copy_config);
+
+    while( is_improving && best_cost!=G.number_of_edges() ){
 
         is_improving = false;
         
@@ -332,17 +351,34 @@ int Solution::local_search(vector<int>&solution, int cost){
                 int new_cost = _swap_two_nodes(solution, current_cost, i, j);
                 
                 if(new_cost > G.number_of_edges()){
-                    cerr << "erro\n";
+                    cerr << "erro ls\n";
                     exit(1);
                 }
 
-                if(new_cost > best_cost){
+                if(new_cost > current_cost){
+
                     current_cost = new_cost;
                     is_improving = true;
+
                     best_cost = new_cost;
+                    visited_checkpoint = visited;
+                    net.copy(copy_net, copy_config);
+                    node2pe = solution;
                 }
                 else{
                     current_cost = _swap_two_nodes(solution, new_cost, i, j);
+                    
+                    if(current_cost > best_cost){
+                        
+                        best_cost    = current_cost;
+                        visited_checkpoint = visited;
+                        net.copy(copy_net, copy_config);
+                        node2pe = solution;
+                    } else{
+                        current_cost = best_cost;
+                        visited = visited_checkpoint;
+                        net.set(copy_net, copy_config);
+                    }
                 }
             }
         }
@@ -382,6 +418,13 @@ int Solution::annealing(vector<int>&solution, int cost){
     int current_cost = cost;
     int node_i, node_j;
 
+    vector<vector<int>> visited_checkpoint=visited;
+    vector<vector<int>> copy_net(N, vector<int>(net.stages()));
+    vector<vector<int>> copy_config(N, vector<int>(net.stages()));
+    vector<int> node2pe=solution;
+    net.copy(copy_net, copy_config);
+    int best_cost=cost;
+
     while(temp>=MIN_TEMPERATURE && current_cost!=G.number_of_edges()){
         
         node_i = iunif(rng);
@@ -389,11 +432,13 @@ int Solution::annealing(vector<int>&solution, int cost){
             node_j=iunif(rng);
         } while(node_j==node_i);
 
+
         int new_cost = _swap_two_nodes(solution, current_cost, node_i, node_j);
         int deltaC = new_cost - current_cost;
 
-        if(new_cost > G.number_of_edges()){
-            cerr << "erro\n";
+
+        if(new_cost > G.number_of_edges() || new_cost < 0){
+            cerr << "erro annealing\n";
             exit(1);
         }
 
@@ -401,13 +446,31 @@ int Solution::annealing(vector<int>&solution, int cost){
 
         if(deltaC>0 || random_value < acceptance_probability(deltaC, temp)){
             current_cost = new_cost;
+            
+            best_cost    = new_cost;
+            visited_checkpoint = visited;
+            net.copy(copy_net, copy_config);
+            node2pe = solution;
+
         } else{
             current_cost = _swap_two_nodes(solution, new_cost, node_i, node_j);
+
+            if(current_cost > best_cost){
+                best_cost    = current_cost;
+                visited_checkpoint = visited;
+                net.copy(copy_net, copy_config);
+                node2pe = solution;
+            } else{
+                current_cost = best_cost;
+                visited = visited_checkpoint;
+                net.set(copy_net, copy_config);
+            }
+
         }
 
         temp *= DECAY;
     }
- 
+
     // delete[] nodes_to_swap;
 
     return current_cost;
