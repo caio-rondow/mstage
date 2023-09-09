@@ -122,21 +122,21 @@ int main(int argc, char **argv){
     cout << capacity     << ",";
     cout << extra        << ",";
 
-    cout << rnd_elapsed  << ",";
-    cout << gseq_elapsed << ",";
-    cout << grnd_elapsed << ",";
-    cout << gdfs_elapsed << ",";
-    cout << gbfs_elapsed << ",";
-    cout << gls_elapsed  << ",";
-    cout << sa_elapsed   << ",";
+    // cout << rnd_elapsed  << ",";
+    // cout << gseq_elapsed << ",";
+    // cout << grnd_elapsed << ",";
+    // cout << gdfs_elapsed << ",";
+    // cout << gbfs_elapsed << ",";
+    // cout << gls_elapsed  << ",";
+    // cout << sa_elapsed   << ",";
 
-    // cout << rnd_cost     << ",";
-    // cout << gseq_cost    << ","; 
-    // cout << grnd_cost    << ",";
-    // cout << gdfs_cost    << ",";
-    // cout << gbfs_cost    << ",";
-    // cout << gls_cost     << ",";
-    // cout << best_sa_cost << ",";
+    cout << rnd_cost     << ",";
+    cout << gseq_cost    << ","; 
+    cout << grnd_cost    << ",";
+    cout << gdfs_cost    << ",";
+    cout << gbfs_cost    << ",";
+    cout << gls_cost     << ",";
+    cout << best_sa_cost << ",";
     cout << optimum      << "\n";
         
     return 0;

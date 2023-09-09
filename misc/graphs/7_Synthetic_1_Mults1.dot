@@ -1,4 +1,4 @@
-digraph sintetic_sintetic_sintetic_sintetic_sintetic_sintetic_sintetic_mults1 {
+digraph 7_Synthetic_1_Mults1 {
 
 	node_1214_0 -> node_1214_0
 	node_1214_0 -> node_1215_0

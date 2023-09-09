@@ -1,4 +1,4 @@
-digraph ewf_ewf_conv3_conv3_horner_bezier_surf_horner_bezier_surf_horner_bezier_surf_horner_bezier_surf {
+digraph 2_Ewf_2_Conv3_4_Horner_Bezier_Surf {
 
 	node_635_0 -> node_637_0
 	node_635_0 -> node_650_0

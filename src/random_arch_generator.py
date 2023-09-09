@@ -18,8 +18,8 @@ def generate_architecture(filename, config, netsize, arcsize):
     # generate random labels
     input_label  = list(range(netsize))
     output_label = list(range(netsize))
-    rand.shuffle(input_label)
-    rand.shuffle(output_label)
+    # rand.shuffle(input_label)
+    # rand.shuffle(output_label)
     
     # divide labels into sets of wires
     input_label  = dividir_lista(input_label,  config['input'])
