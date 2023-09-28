@@ -161,13 +161,10 @@ int Omega::route(int input, int output){
 }
 
 
-int Omega::teste_route(int input, int extra, int output){
+int Omega::route(int word){
 
     // supondo que encontrei um caminho
     bool res=true;
-
-    // concatena palavra: entrada+extra+saida
-    int word = concat(input, extra, output);
 
     // para todos os estagios...
     for(int j=0; j<_st+_ex; j++){
@@ -194,7 +191,7 @@ int Omega::teste_route(int input, int extra, int output){
 
         return word;
     }
-    
+
     return FAIL;
 }
 

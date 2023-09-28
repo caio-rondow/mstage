@@ -1,6 +1,13 @@
 #include "../include/solution.h"
 
-Solution::Solution(const string&json_file, const string&dot_file, int copy, int extra){
+int64_t PackageItem(int word, int source, int target, int64_t validation){
+    return word | source<<24 | (int64_t)target<<32 | validation<<40;
+}
+
+
+Solution::Solution(const string&json_file, const string&dot_file, int copy, int extra):
+    stack(1000)
+{
 
     /* LOAD CONFIG. FILE AND GRAPH */
     DataLoader loader;
@@ -221,6 +228,7 @@ int Solution::evaluate_initial_solution(const vector<int>&solution){
     
     for(auto &node:G.nodes()){
         cost+=_add_node_into_pe(solution, node, solution[node]);
+        stack.clear();
     }
 
     return cost;
@@ -254,6 +262,9 @@ int Solution::_add_node_into_pe(const vector<int>&solution, int node, int pe){
             if(word != FAIL){
                 visited[predecessor][node] = word;
                 added++;
+
+                int64_t item = PackageItem(word, predecessor, node, 1);
+                stack.push(item);
             }
         } 
     }
@@ -266,6 +277,9 @@ int Solution::_add_node_into_pe(const vector<int>&solution, int node, int pe){
             if(word != FAIL){
                 visited[node][neighbor] = word;
                 added++;
+
+                int64_t item = PackageItem(word, node, neighbor, 1);
+                stack.push(item);
             }
         } 
     }
@@ -287,6 +301,9 @@ int Solution::_remove_node_from_pe(const vector<int>&solution, int node, int pe)
         if(net.unroute(word)){
             removed++;
             visited[predecessor][node] = FAIL;
+
+            int64_t item = PackageItem(word, predecessor, node, 0);
+            stack.push(item);
         }  
     }
 
@@ -297,10 +314,36 @@ int Solution::_remove_node_from_pe(const vector<int>&solution, int node, int pe)
         if(net.unroute(word)){
             visited[node][neighbor] = FAIL;
             removed++;
+
+            int64_t item = PackageItem(word, node, neighbor, 0);
+            stack.push(item);
         } 
     }
 
     return removed;
+}
+
+void Solution::_undo_swap(){
+
+    while(!stack.empty()){
+
+        int64_t item = stack.top();
+        stack.pop();
+
+        /* unpack data */
+        int word = (item & MAX_WORD);
+        int source = ((item>>24) & MAX_SOURCE);
+        int target = ((item>>32) & MAX_TARGET);
+        int validation = ((item>>40) & MAX_V);
+
+        if(validation){
+            net.unroute(word);
+            visited[source][target] = FAIL;
+        } else{
+            net.route(word);
+            visited[source][target] = word;
+        }
+    }
 }
 
 int Solution::_swap_two_nodes(vector<int>&solution, int current_cost, int node_i, int node_j){
@@ -330,18 +373,12 @@ int Solution::_swap_two_nodes(vector<int>&solution, int current_cost, int node_i
 
 int Solution::local_search(vector<int>&solution, int cost){   
 
+    stack.clear();
     int num_pes = arc.size();
     int current_cost = cost;
     bool is_improving=true;
-    int best_cost = current_cost;
 
-    vector<vector<int>> visited_checkpoint=visited;
-    vector<vector<int>> copy_net(N, vector<int>(net.stages()));
-    vector<vector<int>> copy_config(N, vector<int>(net.stages()));
-    vector<int> node2pe=solution;
-    net.copy(copy_net, copy_config);
-
-    while( is_improving && best_cost!=G.number_of_edges() ){
+    while( is_improving && current_cost!=G.number_of_edges() ){
 
         is_improving = false;
         
@@ -356,116 +393,64 @@ int Solution::local_search(vector<int>&solution, int cost){
                 }
 
                 if(new_cost > current_cost){
-
                     current_cost = new_cost;
                     is_improving = true;
-
-                    best_cost = new_cost;
-                    visited_checkpoint = visited;
-                    net.copy(copy_net, copy_config);
-                    node2pe = solution;
+                    stack.clear();
                 }
                 else{
-                    current_cost = _swap_two_nodes(solution, new_cost, i, j);
-                    
-                    if(current_cost > best_cost){
-                        
-                        best_cost    = current_cost;
-                        visited_checkpoint = visited;
-                        net.copy(copy_net, copy_config);
-                        node2pe = solution;
+                    int attempt_improve_cost = _swap_two_nodes(solution, new_cost, i, j);
+                    if(current_cost < attempt_improve_cost){
+                        current_cost = attempt_improve_cost;
                     } else{
-                        current_cost = best_cost;
-                        visited = visited_checkpoint;
-                        net.set(copy_net, copy_config);
+                        _undo_swap();
                     }
+
                 }
             }
         }
     }
 
-    return best_cost;
+    return current_cost;
 }
 
 double Solution::acceptance_probability(int deltaC, double temp) const{
     return exp(deltaC/temp);
 }
 
-int Solution::annealing(vector<int>&solution, int cost){
+int Solution::annealing(vector<int>&solution, int cost, const vector<double>&random_values, const vector<int>&random_nodes){
 
-    /* https://stackoverflow.com/questions/9878965/rand-between-0-and-1 */
-    mt19937_64 rng;
-    // initialize the random number generator with time-dependent seed
-    uint64_t timeSeed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
-    std::seed_seq ss{uint32_t(timeSeed & 0xffffffff), uint32_t(timeSeed>>32)};
-    rng.seed(ss);
-    // initialize a uniform distribution between 0 and 1
-    uniform_real_distribution<double> unif(0, 1);
-    // initialize a uniform distribution between 0 and nodes-1
-    uniform_int_distribution<int> iunif(0, G.number_of_nodes()-1);
-
-    // int MAX_SWAPS = ((log10(MIN_TEMPERATURE) - log10(MAX_TEMPERATURE)) / log10(DECAY)) + 1;
-    // int *nodes_to_swap = new int[2*MAX_SWAPS];
-    // nodes_to_swap[0] = iunif(rng); 
-    // for(int i=1; i<2*MAX_SWAPS; i++){
-    //     do{
-    //         nodes_to_swap[i] = iunif(rng);
-    //     } while(nodes_to_swap[i] == nodes_to_swap[i-1]);
-    // }
-    // int k=0;
+    stack.clear();
 
     double temp = MAX_TEMPERATURE;
     int current_cost = cost;
     int node_i, node_j;
-
-    vector<vector<int>> visited_checkpoint=visited;
-    vector<vector<int>> copy_net(N, vector<int>(net.stages()));
-    vector<vector<int>> copy_config(N, vector<int>(net.stages()));
-    vector<int> node2pe=solution;
-    net.copy(copy_net, copy_config);
-    int best_cost=cost;
+    int k=0, i=1;
 
     while(temp>=MIN_TEMPERATURE && current_cost!=G.number_of_edges()){
         
-        node_i = iunif(rng);
-        do{
-            node_j=iunif(rng);
-        } while(node_j==node_i);
 
+        node_i = random_nodes[i-1];
+        node_j = random_nodes[i];
+        i+=2;
 
         int new_cost = _swap_two_nodes(solution, current_cost, node_i, node_j);
         int deltaC = new_cost - current_cost;
-
 
         if(new_cost > G.number_of_edges() || new_cost < 0){
             cerr << "erro annealing\n";
             exit(1);
         }
 
-        double random_value = unif(rng);
-
-        if(deltaC>0 || random_value < acceptance_probability(deltaC, temp)){
+        if(deltaC>0 || random_values[k++] < acceptance_probability(deltaC, temp)){
             current_cost = new_cost;
-            
-            best_cost    = new_cost;
-            visited_checkpoint = visited;
-            net.copy(copy_net, copy_config);
-            node2pe = solution;
-
+            stack.clear();
         } else{
-            current_cost = _swap_two_nodes(solution, new_cost, node_i, node_j);
-
-            if(current_cost > best_cost){
-                best_cost    = current_cost;
-                visited_checkpoint = visited;
-                net.copy(copy_net, copy_config);
-                node2pe = solution;
+            int attempt_improve_cost = _swap_two_nodes(solution, new_cost, node_i, node_j);
+            if(current_cost < attempt_improve_cost){
+                current_cost = attempt_improve_cost;
             } else{
-                current_cost = best_cost;
-                visited = visited_checkpoint;
-                net.set(copy_net, copy_config);
+                _undo_swap();
             }
-
         }
 
         temp *= DECAY;

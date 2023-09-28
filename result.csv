@@ -1,6 +1,9 @@
-GRAFO,CAPACIDADE,EXTRA,ALEATORIO,GULOSO_SEQ,GULOSO_RND,GULOSO_DFS,GULOSO_BFS,GULOSO_LS,ANNEALING,OPTIMUM
-misc/graphs/8_Synthetic.dot,100.00%,,0,168,212,214,212,214,254,254,256
-misc/graphs/8_Synthetic.dot,100.00%,,1,210,236,236,236,234,254,256,256
-misc/graphs/8_Synthetic.dot,100.00%,,2,228,250,253,250,247,256,256,256
-misc/graphs/8_Synthetic.dot,100.00%,,3,246,256,255,256,256,256,256,256
-misc/graphs/8_Synthetic.dot,100.00%,,4,255,256,256,256,256,256,256,256
+GRAFO,CW,EXTRA,SA,TEMPO_SA_SEGUNDOS,OPTIMUM
+misc/graphs/2_Fir16.dot, 49.21%, 0, 126, 0, 126
+misc/graphs/2_Fir16.dot, 49.21%, 1, 126, 0, 126
+misc/graphs/2_Fir16.dot, 49.21%, 2, 126, 0, 126
+misc/graphs/2_Fir16.dot, 49.21%, 3, 126, 0, 126
+misc/graphs/2_Fir16.dot, 49.21%, 4, 126, 0, 126
+misc/graphs/6_Mults1.dot, 53.90%, 0, 138, 0, 138
+misc/graphs/6_Mults1.dot, 53.90%, 1, 138, 0, 138
+misc/graphs/6_Mults1.dot, 53.90%, 2, 138, 0, 138

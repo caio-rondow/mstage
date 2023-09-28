@@ -41,6 +41,7 @@ public:
 
     // Methods
     int route(int input, int output);
+    int route(int word);
     bool unroute(int word);
     void display() const;
     void display_switch() const;
@@ -48,8 +49,6 @@ public:
     void copy(vector<vector<int>>&net, vector<vector<int>>&config) const;
     void set(vector<vector<int>>&net, vector<vector<int>>&config);
     int stages() const;
-
-    int teste_route(int input, int extra, int output);
 };
 
 #endif
